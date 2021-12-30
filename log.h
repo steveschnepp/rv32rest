@@ -14,9 +14,9 @@ void dumpMemory(Cpu* cpu) {
 
 void dumpRegister(Cpu* cpu) {
     for (int i = 0; i < 32; i++) {
-        printf("reg[%02d]: 0x%08x\n", i, cpu->registers[i]);
+        printf("%-5s: 0x%08x\n", register_name[i], cpu->registers[i]);
     }
-    printf("PC     : 0x%08x\n", cpu->pc);
+    printf("pc   : 0x%08x\n", cpu->pc);
     return;
 }
 

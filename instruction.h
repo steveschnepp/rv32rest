@@ -12,14 +12,14 @@ void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
     }
     cpu->pc += (int32_t)imm;
     cpu->registers[rd] = cpu->pc + 4;
-    printf("jal\treg[%02d], %x\n", rd, cpu->pc);
+    printf("jal\t%s, %x\n", register_name[rd], cpu->pc);
     return;
 }
 
 void addi(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     cpu->pc += 4;
     cpu->registers[rd] = cpu->registers[rs1] + imm;
-    printf("addi\treg[%02d], reg[%02d], %d\n", rd, rs1, imm);
+    printf("addi\t%s, %s, %d\n", register_name[rd], register_name[rs1], imm);
     return;
 }
 

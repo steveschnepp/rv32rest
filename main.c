@@ -23,22 +23,39 @@ void initCpu(Cpu* cpu) {
     return;
 }
 
-uint32_t fetch(Cpu* cpu) { return cpu->memory[cpu->pc]; }
+uint32_t fetch(Cpu* cpu) { return cpu->memory[cpu->pc / 4]; }
+
+void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
+    if (imm >> 20) {
+        imm |= 0xFFE00000;
+    }
+    cpu->pc += (int32_t)imm;
+    cpu->registers[rd] = cpu->pc + 4;
+    printf("jal\treg[%02d], %x\n", rd, cpu->pc);
+    return;
+}
+
+void addi(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = cpu->registers[rs1] + imm;
+    printf("addi\treg[%02d], reg[%02d], %d\n", rd, rs1, imm);
+    return;
+}
 
 void xori(Cpu* cpu, uint16_t imm, uint8_t rs1, uint8_t rd) {
-    cpu->pc++;
+    cpu->pc += 4;
     cpu->registers[rd] = (cpu->registers[rs1] ^ imm) & 0x0FFF;
     return;
 }
 
 void ori(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    cpu->pc++;
+    cpu->pc += 4;
     cpu->registers[rd] = (cpu->registers[rs1] | imm) & 0x0FFF;
     return;
 }
 
 void andi(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    cpu->pc++;
+    cpu->pc += 4;
     cpu->registers[rd] = (cpu->registers[rs1] & imm) & 0x0FFF;
     return;
 }
@@ -55,9 +72,18 @@ void execution(Cpu* cpu, uint32_t instruction) {
     uint32_t imm;
 
     switch (opcode) {
+        case 0b1101111:
+            imm = ((instruction >> 11) & 0x100000) | (instruction & 0x0FF000) |
+                  ((instruction >> 9) & 0x000800) |
+                  ((instruction >> 20) & 0x0007FE);
+            jal(cpu, imm, rd);
+            break;
         case 0b0010011:
             imm = (instruction >> 20) & 0x0FFF;
             switch (funct3) {
+                case 0b000:
+                    addi(cpu, imm, rs1, rd);
+                    break;
                 case 0b100:
                     xori(cpu, imm, rs1, rd);
                     break;
@@ -108,8 +134,22 @@ int main(int argc, char* argv[]) {
     //     printf("0x%04x : 0x%08x\n", i * 4, cpu.memory[i]);
     // }
 
-    uint32_t instruction = fetch(&cpu);
-    execution(&cpu, instruction);
+    uint32_t instruction;
+    while (1) {
+        instruction = fetch(&cpu);
+        execution(&cpu, instruction);
+
+        if (cpu.pc == 0x0000) {
+            break;
+        }
+    }
+
+    //レジスタダンプ
+    for (int i = 0; i < 32; i++) {
+        printf("reg[%02d]:0x%08x\n", i, cpu.registers[i]);
+    }
+
+    printf("PC     :0x%08x\n", cpu.pc);
 
     return 0;
 }

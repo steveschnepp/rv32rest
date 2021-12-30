@@ -1,2 +1,4 @@
 *.o
 rv32i_emu
+sample/*.elf
+sample/*.bin

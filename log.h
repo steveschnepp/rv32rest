@@ -6,8 +6,8 @@
 #include "cpu.h"
 
 void dumpMemory(Cpu* cpu) {
-    for (int i = 0; i < RAM_SIZE_32; i++) {
-        printf("0x%04x : 0x%08x\n", i * 4, cpu->memory[i]);
+    for (int i = 0; i < MEM_SIZE_32; i++) {
+        printf("0x%04lx : 0x%08x\n", i * sizeof(uint32_t), cpu->memory[i]);
     }
     return;
 }

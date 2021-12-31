@@ -2,4 +2,5 @@
 .global _start
 
 _start:
-    call _main
+    call main
+    call _start

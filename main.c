@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
     }
 
     dumpRegister(&cpu);
+    dumpMemory(&cpu);
 
     return 0;
 }

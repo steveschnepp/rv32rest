@@ -6,12 +6,32 @@
 
 #include "cpu.h"
 
+int32_t signExtension8(uint32_t imm_8) {
+    int32_t imm;
+    if (imm_8 >> 7) {
+        imm = imm_8 | 0xFFFFFF00;
+    } else {
+        imm = imm_8;
+    }
+    return imm;
+}
+
 int32_t signExtension12(uint32_t imm_12) {
     int32_t imm;
     if (imm_12 >> 11) {
         imm = imm_12 | 0xFFFFF000;
     } else {
         imm = imm_12;
+    }
+    return imm;
+}
+
+int32_t signExtension16(uint32_t imm_16) {
+    int32_t imm;
+    if (imm_16 >> 15) {
+        imm = imm_16 | 0xFFFF0000;
+    } else {
+        imm = imm_16;
     }
     return imm;
 }
@@ -33,9 +53,54 @@ void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
     return;
 }
 
+void lb(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = signExtension8(
+        cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] & 0xFF);
+    printf("lb\t%s, %d(%s)\n", register_name[rd], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
+void lh(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = signExtension16(
+        cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] & 0xFFFF);
+    printf("lh\t%s, %d(%s)\n", register_name[rd], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
+void lw(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4];
+    printf("lw\t%s, %d(%s)\n", register_name[rd], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
+void lbu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] & 0xFF;
+    printf("lw\t%s, %d(%s)\n", register_name[rd], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
+void lhu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] & 0xFFFF;
+    printf("lw\t%s, %d(%s)\n", register_name[rd], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
 void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     cpu->pc += 4;
-    cpu->memory[cpu->registers[rs1] + signExtension12(imm) / 4] =
+    cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] =
         cpu->registers[rs2] & 0xFF;
     printf("sb\t%s, %d(%s)\n", register_name[rs2], signExtension12(imm),
            register_name[rs1]);
@@ -44,7 +109,7 @@ void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     cpu->pc += 4;
-    cpu->memory[cpu->registers[rs1] + signExtension12(imm) / 4] =
+    cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] =
         cpu->registers[rs2] & 0xFFFF;
     printf("sh\t%s, %d(%s)\n", register_name[rs2], signExtension12(imm),
            register_name[rs1]);
@@ -53,7 +118,7 @@ void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void sw(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     cpu->pc += 4;
-    cpu->memory[cpu->registers[rs1] + signExtension12(imm) / 4] =
+    cpu->memory[(cpu->registers[rs1] + signExtension12(imm)) / 4] =
         cpu->registers[rs2] & 0xFFFFFFFF;
     printf("sw\t%s, %d(%s)\n", register_name[rs2], signExtension12(imm),
            register_name[rs1]);
@@ -134,6 +199,29 @@ void execution(Cpu* cpu, uint32_t instruction) {
                   ((instruction >> 9) & 0x000800) |
                   ((instruction >> 20) & 0x0007FE);
             jal(cpu, imm, rd);
+            break;
+        case 0b0000011:
+            imm = (instruction >> 20) & 0x0FFF;
+            switch (funct3) {
+                case 0b000:
+                    lb(cpu, imm, rs1, rd);
+                    break;
+                case 0b001:
+                    lh(cpu, imm, rs1, rd);
+                    break;
+                case 0b010:
+                    lw(cpu, imm, rs1, rd);
+                    break;
+                case 0b100:
+                    lbu(cpu, imm, rs1, rd);
+                    break;
+                case 0b101:
+                    lhu(cpu, imm, rs1, rd);
+                    break;
+                default:
+                    printf("未実装\n");
+                    break;
+            }
             break;
         case 0b0100011:
             imm = ((instruction >> 20) & 0xFE0) | ((instruction >> 7) & 0x1F);

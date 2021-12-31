@@ -28,9 +28,16 @@ int main(int argc, char* argv[]) {
     fclose(binary);
 
     uint32_t instruction;
+    int i = 0;
+
     while (1) {
         instruction = fetch(&cpu);
         execution(&cpu, instruction);
+
+        i++;
+        if (i > 20) {
+            break;
+        }
 
         if (cpu.pc == 0x0000) {
             break;

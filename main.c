@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
     while (1) {
         instruction = fetch(&cpu);
         execution(&cpu, instruction);
+        cpu.registers[0] = 0;
 
         i++;
         if (i > 20) {

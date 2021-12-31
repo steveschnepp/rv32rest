@@ -26,6 +26,16 @@ int32_t signExtension12(uint32_t imm_12) {
     return imm;
 }
 
+int32_t signExtension13(uint32_t imm_13) {
+    int32_t imm;
+    if (imm_13 >> 12) {
+        imm = imm_13 | 0xFFFFE000;
+    } else {
+        imm = imm_13;
+    }
+    return imm;
+}
+
 int32_t signExtension16(uint32_t imm_16) {
     int32_t imm;
     if (imm_16 >> 15) {
@@ -50,6 +60,17 @@ void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
     cpu->registers[rd] = cpu->pc + 4;
     cpu->pc += signExtension20(imm);
     printf("jal\t%s, %x\n", register_name[rd], cpu->pc);
+    return;
+}
+
+void bge(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    printf("bge\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
+           cpu->pc + signExtension13(imm));
+    if ((int32_t)(cpu->registers[rs1]) >= (int32_t)(cpu->registers[rs2])) {
+        cpu->pc += signExtension13(imm);
+    } else {
+        cpu->pc += 4;
+    }
     return;
 }
 
@@ -285,6 +306,20 @@ void execution(Cpu* cpu, uint32_t instruction) {
                   ((instruction >> 9) & 0x000800) |
                   ((instruction >> 20) & 0x0007FE);
             jal(cpu, imm, rd);
+            break;
+        case 0b1100011:
+            imm = ((instruction >> 19) & 0x1000) |
+                  ((instruction << 4) & 0x800) | ((instruction >> 20) & 0x7E0) |
+                  ((instruction >> 7) & 0x1E);
+            switch (funct3) {
+                case 0b101:
+                    bge(cpu, imm, rs2, rs1);
+                    break;
+                default:
+                    printf("未実装\n");
+                    return;
+                    break;
+            }
             break;
         case 0b0000011:
             imm = (instruction >> 20) & 0x0FFF;

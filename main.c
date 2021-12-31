@@ -32,15 +32,19 @@ int main(int argc, char* argv[]) {
 
     while (1) {
         instruction = fetch(&cpu);
+        printf("%4x: %08x\t\t", cpu.pc, instruction);
+
         execution(&cpu, instruction);
         cpu.registers[0] = 0;
 
         i++;
-        if (i > 20) {
+        if (i > 100000) {
+            printf("Error.\n");
             break;
         }
 
         if (cpu.pc == 0x0000) {
+            printf("Finish.\n");
             break;
         }
     }

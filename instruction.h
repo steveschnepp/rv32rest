@@ -182,6 +182,92 @@ void srai(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+void add(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        (int32_t)(cpu->registers[rs1]) + (int32_t)(cpu->registers[rs2]);
+    printf("add\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void sub(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        (int32_t)(cpu->registers[rs1]) - (int32_t)(cpu->registers[rs2]);
+    printf("sub\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void sll(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = (cpu->registers[rs1]) << (cpu->registers[rs2]);
+    printf("sll\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void slt(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        ((int32_t)(cpu->registers[rs1]) < (int32_t)(cpu->registers[rs2])) ? 1
+                                                                          : 0;
+    printf("slt\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void sltu(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] =
+        ((cpu->registers[rs1]) < (cpu->registers[rs2])) ? 1 : 0;
+    printf("sltu\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void xoro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = (cpu->registers[rs1]) ^ (cpu->registers[rs2]);
+    printf("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void srl(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = (cpu->registers[rs1]) << (cpu->registers[rs2]);
+    printf("srl\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void sra(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = (int32_t)(cpu->registers[rs1])
+                         << (cpu->registers[rs2]);
+    printf("sra\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void oro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = (cpu->registers[rs1]) | (cpu->registers[rs2]);
+    printf("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
+void ando(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    cpu->pc += 4;
+    cpu->registers[rd] = (cpu->registers[rs1]) & (cpu->registers[rs2]);
+    printf("and\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+           register_name[rs2]);
+    return;
+}
+
 void execution(Cpu* cpu, uint32_t instruction) {
     uint8_t opcode = (instruction >> 0) & 0x7F;
     uint8_t funct3 = (instruction >> 12) & 0x07;
@@ -266,11 +352,51 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     slli(cpu, imm, rs1, rd);
                     break;
                 case 0b101:
-                    if ((imm >> 10) & 0x01 == 0) {
+                    if (funct7 == 0) {
                         srli(cpu, imm, rs1, rd);
                     } else {
                         srai(cpu, imm, rs1, rd);
                     }
+                    break;
+                default:
+                    printf("未実装\n");
+                    return;
+                    break;
+            }
+            break;
+        case 0b0110011:
+            switch (funct3) {
+                case 0b000:
+                    if (funct7 == 0) {
+                        add(cpu, rs2, rs1, rd);
+                    } else {
+                        sub(cpu, rs2, rs1, rd);
+                    }
+                    break;
+                case 0b001:
+                    sll(cpu, rs2, rs1, rd);
+                    break;
+                case 0b010:
+                    slt(cpu, rs2, rs1, rd);
+                    break;
+                case 0b011:
+                    sltu(cpu, rs2, rs1, rd);
+                    break;
+                case 0b100:
+                    xoro(cpu, rs2, rs1, rd);
+                    break;
+                case 0b101:
+                    if (funct7 == 0) {
+                        srl(cpu, rs2, rs1, rd);
+                    } else {
+                        sra(cpu, rs2, rs1, rd);
+                    }
+                    break;
+                case 0b110:
+                    oro(cpu, rs2, rs1, rd);
+                    break;
+                case 0b111:
+                    ando(cpu, rs2, rs1, rd);
                     break;
                 default:
                     printf("未実装\n");

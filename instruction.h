@@ -27,9 +27,36 @@ int32_t signExtension20(uint32_t imm_20) {
 }
 
 void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
-    cpu->pc += signExtension20(imm);
     cpu->registers[rd] = cpu->pc + 4;
+    cpu->pc += signExtension20(imm);
     printf("jal\t%s, %x\n", register_name[rd], cpu->pc);
+    return;
+}
+
+void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    cpu->pc += 4;
+    cpu->memory[cpu->registers[rs1] + signExtension12(imm) / 4] =
+        cpu->registers[rs2] & 0xFF;
+    printf("sb\t%s, %d(%s)\n", register_name[rs2], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
+void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    cpu->pc += 4;
+    cpu->memory[cpu->registers[rs1] + signExtension12(imm) / 4] =
+        cpu->registers[rs2] & 0xFFFF;
+    printf("sh\t%s, %d(%s)\n", register_name[rs2], signExtension12(imm),
+           register_name[rs1]);
+    return;
+}
+
+void sw(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    cpu->pc += 4;
+    cpu->memory[cpu->registers[rs1] + signExtension12(imm) / 4] =
+        cpu->registers[rs2] & 0xFFFFFFFF;
+    printf("sw\t%s, %d(%s)\n", register_name[rs2], signExtension12(imm),
+           register_name[rs1]);
     return;
 }
 
@@ -107,6 +134,24 @@ void execution(Cpu* cpu, uint32_t instruction) {
                   ((instruction >> 9) & 0x000800) |
                   ((instruction >> 20) & 0x0007FE);
             jal(cpu, imm, rd);
+            break;
+        case 0b0100011:
+            imm = ((instruction >> 20) & 0xFE0) | ((instruction >> 7) & 0x1F);
+            switch (funct3) {
+                case 0b000:
+                    sb(cpu, imm, rs2, rs1);
+                    break;
+                case 0b001:
+                    sh(cpu, imm, rs2, rs1);
+                    break;
+                case 0b010:
+                    sw(cpu, imm, rs2, rs1);
+                    break;
+                default:
+                    printf("未実装\n");
+                    return;
+                    break;
+            }
             break;
         case 0b0010011:
             imm = (instruction >> 20) & 0x0FFF;

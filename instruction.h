@@ -6,11 +6,18 @@
 
 #include "cpu.h"
 
-void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
-    if (imm >> 20) {
-        imm |= 0xFFE00000;
+int32_t signExtension(uint32_t imm_20) {
+    int32_t imm;
+    if (imm_20 >> 20) {
+        imm = imm_20 | 0xFFE00000;
+    } else {
+        imm = imm_20;
     }
-    cpu->pc += (int32_t)imm;
+    return imm;
+}
+
+void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
+    cpu->pc += signExtension(imm);
     cpu->registers[rd] = cpu->pc + 4;
     printf("jal\t%s, %x\n", register_name[rd], cpu->pc);
     return;

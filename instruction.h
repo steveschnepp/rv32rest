@@ -63,6 +63,14 @@ void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
     return;
 }
 
+void jalr(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    cpu->registers[rd] = cpu->pc + 4;
+    cpu->pc = cpu->registers[rs1] + signExtension12(imm);
+    printf("jalr\t%s, %s, %x\n", register_name[rd], register_name[rs1],
+           cpu->pc);
+    return;
+}
+
 void bge(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     printf("bge\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
            cpu->pc + signExtension13(imm));
@@ -306,6 +314,10 @@ void execution(Cpu* cpu, uint32_t instruction) {
                   ((instruction >> 9) & 0x000800) |
                   ((instruction >> 20) & 0x0007FE);
             jal(cpu, imm, rd);
+            break;
+        case 0b1100111:
+            imm = (instruction >> 20) & 0x0FFF;
+            jalr(cpu, imm, rs1, rd);
             break;
         case 0b1100011:
             imm = ((instruction >> 19) & 0x1000) |

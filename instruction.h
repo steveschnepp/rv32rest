@@ -56,6 +56,20 @@ int32_t signExtension20(uint32_t imm_20) {
     return imm;
 }
 
+void lui(Cpu* cpu, uint32_t imm, uint8_t rd) {
+    printf("lui\t%s, 0x%x\n", register_name[rd], imm);
+    cpu->registers[rd] = imm << 12;
+    cpu->pc += 4;
+    return;
+}
+
+void auipc(Cpu* cpu, uint32_t imm, uint8_t rd) {
+    printf("auipc\t%s, 0x%x\n", register_name[rd], imm);
+    cpu->registers[rd] = cpu->pc + (imm << 12);
+    cpu->pc += 4;
+    return;
+}
+
 void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
     printf("jal\t%s, %x\n", register_name[rd], cpu->pc + signExtension20(imm));
     cpu->registers[rd] = cpu->pc + 4;
@@ -373,6 +387,14 @@ void execution(Cpu* cpu, uint32_t instruction) {
     uint32_t imm;
 
     switch (opcode) {
+        case 0b0110111:
+            imm = (instruction >> 12) & 0x0FFFFF;
+            lui(cpu, imm, rd);
+            break;
+        case 0b0010111:
+            imm = (instruction >> 12) & 0x0FFFFF;
+            auipc(cpu, imm, rd);
+            break;
         case 0b1101111:
             imm = ((instruction >> 11) & 0x100000) | (instruction & 0x0FF000) |
                   ((instruction >> 9) & 0x000800) |

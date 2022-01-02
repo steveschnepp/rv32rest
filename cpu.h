@@ -27,7 +27,7 @@ void initCpu(Cpu* cpu) {
     memset(cpu->registers, 0, sizeof(cpu->registers));
     memset(cpu->memory, 0, sizeof(cpu->memory));
 
-    cpu->registers[2] = 0x07FC;
+    cpu->registers[2] = 0x0800;
     return;
 }
 

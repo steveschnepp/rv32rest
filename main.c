@@ -17,7 +17,6 @@ int main(int argc, char* argv[]) {
 
     //バイナリファイルの読み込み
     FILE* binary;
-
     binary = fopen(argv[1], "rb");
     if (binary == NULL) {
         printf("Can't open binary file.\n");
@@ -28,22 +27,26 @@ int main(int argc, char* argv[]) {
     fclose(binary);
 
     uint32_t instruction;
-    int i = 0;
+    int loop_cnt = 0;
 
     while (1) {
         instruction = fetch(&cpu);
         printf("%4x: %08x\t\t", cpu.pc, instruction);
 
         execution(&cpu, instruction);
+
+        //ゼロレジスタはゼロ固定
         cpu.registers[0] = 0;
 
-        i++;
-        if (i > 100000) {
+        loop_cnt++;
+        if (loop_cnt > 100000) {
+            //ループ回数が多すぎる場合は停止する
             printf("Error.\n");
             break;
         }
 
         if (cpu.pc == 0x0000) {
+            //プログラムカウンタが0に戻ったら終了
             printf("Finish.\n");
             break;
         }

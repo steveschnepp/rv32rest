@@ -71,10 +71,65 @@ void jalr(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+void beq(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    printf("beq\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
+           cpu->pc + signExtension13(imm));
+    if (cpu->registers[rs1] == cpu->registers[rs2]) {
+        cpu->pc += signExtension13(imm);
+    } else {
+        cpu->pc += 4;
+    }
+    return;
+}
+
+void bne(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    printf("bne\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
+           cpu->pc + signExtension13(imm));
+    if (cpu->registers[rs1] != cpu->registers[rs2]) {
+        cpu->pc += signExtension13(imm);
+    } else {
+        cpu->pc += 4;
+    }
+    return;
+}
+
+void blt(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    printf("blt\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
+           cpu->pc + signExtension13(imm));
+    if ((int32_t)(cpu->registers[rs1]) < (int32_t)(cpu->registers[rs2])) {
+        cpu->pc += signExtension13(imm);
+    } else {
+        cpu->pc += 4;
+    }
+    return;
+}
+
 void bge(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     printf("bge\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
            cpu->pc + signExtension13(imm));
     if ((int32_t)(cpu->registers[rs1]) >= (int32_t)(cpu->registers[rs2])) {
+        cpu->pc += signExtension13(imm);
+    } else {
+        cpu->pc += 4;
+    }
+    return;
+}
+
+void bltu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    printf("bltu\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
+           cpu->pc + signExtension13(imm));
+    if (cpu->registers[rs1] < cpu->registers[rs2]) {
+        cpu->pc += signExtension13(imm);
+    } else {
+        cpu->pc += 4;
+    }
+    return;
+}
+
+void bgeu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
+    printf("bgeu\t%s, %s, %x\n", register_name[rs1], register_name[rs2],
+           cpu->pc + signExtension13(imm));
+    if (cpu->registers[rs1] >= cpu->registers[rs2]) {
         cpu->pc += signExtension13(imm);
     } else {
         cpu->pc += 4;
@@ -333,8 +388,23 @@ void execution(Cpu* cpu, uint32_t instruction) {
                   ((instruction << 4) & 0x800) | ((instruction >> 20) & 0x7E0) |
                   ((instruction >> 7) & 0x1E);
             switch (funct3) {
+                case 0b000:
+                    beq(cpu, imm, rs2, rs1);
+                    break;
+                case 0b001:
+                    bne(cpu, imm, rs2, rs1);
+                    break;
+                case 0b100:
+                    blt(cpu, imm, rs2, rs1);
+                    break;
                 case 0b101:
                     bge(cpu, imm, rs2, rs1);
+                    break;
+                case 0b110:
+                    bltu(cpu, imm, rs2, rs1);
+                    break;
+                case 0b111:
+                    bgeu(cpu, imm, rs2, rs1);
                     break;
                 default:
                     printf("未実装\n");

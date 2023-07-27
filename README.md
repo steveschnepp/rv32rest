@@ -1,36 +1,44 @@
 # RV32I Emulator
-これはC言語で記述したRISC-V(RV32I)のエミュレータです．
-`FENCE`，`ECALL`，`EBREAK`を除く37個の命令を実装しました．
 
-## 使い方
-以下のコマンドで`rv32i_emu`という実行ファイルが生成されます．
+This is a RISC-V (RV32I) emulator written in C language.
+Implemented 37 instructions except `FENCE`, `ECALL` & `EBREAK`.
+
+## Usage
+
+The following command `rv32i_emu` will generate an executable file.
+
 ``` bash
 $ git clone https://github.com/zyu-c/Rv32iEmulator.git
 $ cd Rv32iEmulator
 $ make
 ```
 
-実行時は引数にRV32I用にコンパイルされたバイナリファイルを与えてください．
+Give a binary file compiled for RV32I as an argument when executing.
+
 ``` bash
 $ rv32i_emu sample/test1.bin
 ```
 
-## サンプルファイルのコンパイル
-予めRISC-Vのコンパイル環境を整えておいてください．
-詳しくは→[riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)
+## Compiling the sample files
 
-サンプルプログラムのコンパイルを行い，elfファイルを生成します．
+Prepare the RISC-V compilation environment in advance.
+For details → [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain).
+
+Compile the sample program and generate an ELF file.
+
 ``` bash
 $ cd sample
 $ riscv32-unknown-linux-gnu-gcc -o test1.elf test1.c start.s -march=rv32i -static -nostdlib -nostartfiles -T link.ld
 ```
 
-elfファイルをバイナリファイルに変換します．
+Convert an elf file to a binary file.
+
 ``` bash
 $ riscv32-unknown-linux-gnu-objcopy -O binary test1.elf test1.bin
 ```
 
-以下のコマンドでelfファイルを逆アセンブルすることができます．
+You can disassemble the elf file with the following command.
+
 ``` bash
 $ riscv32-unknown-linux-gnu-objdump -d test1.elf
 ```

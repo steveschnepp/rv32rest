@@ -572,6 +572,9 @@ void execution(Cpu* cpu, uint32_t instruction) {
             printf("未実装\n");
             break;
     }
+
+    //ゼロレジスタはゼロ固定
+    cpu->registers[0] = 0;
     return;
 }
 

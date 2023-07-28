@@ -35,9 +35,6 @@ int main(int argc, char* argv[]) {
 
         execution(&cpu, instruction);
 
-        //ゼロレジスタはゼロ固定
-        cpu.registers[0] = 0;
-
         loop_cnt++;
         if (loop_cnt > 100000) {
             //ループ回数が多すぎる場合は停止する

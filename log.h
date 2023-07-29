@@ -13,8 +13,11 @@ void dumpMemory(Cpu* cpu) {
 }
 
 void dumpRegister(Cpu* cpu) {
-    for (int i = 0; i < 32; i++) {
-        printf("%-5s: 0x%08x\n", register_name[i], cpu->registers[i]);
+    for (int i = 0; i < 16; i++) {
+        printf("%-5s: 0x%08x", register_name[i], cpu->registers[i]);
+        printf("\t");
+        printf("%-5s: 0x%08x", register_name[i+16], cpu->registers[i+16]);
+        printf("\n");
     }
     printf("pc   : 0x%08x\n", cpu->pc);
     return;

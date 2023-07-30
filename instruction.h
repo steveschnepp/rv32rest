@@ -164,8 +164,8 @@ int8_t load1s(uint32_t ofs, uint32_t *memory) {
 }
 
 void lb(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    printf("lb\t%s, %d(%s)\n", register_name[rd], signExtension(imm, 12),
-           register_name[rs1]);
+    printf("lb\t%s, %d(%s:%08x)\n", register_name[rd], signExtension(imm, 12),
+           register_name[rs1], cpu->registers[rs1]);
     cpu->pc += 4;
     uint32_t addr = cpu->registers[rs1] + signExtension(imm, 12);
     int8_t value = load1s(addr, cpu->memory);
@@ -174,8 +174,8 @@ void lb(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
 }
 
 void lh(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    printf("lh\t%s, %d(%s)\n", register_name[rd], signExtension(imm, 12),
-           register_name[rs1]);
+    printf("lh\t%s, %d(%s:%08x)\n", register_name[rd], signExtension(imm, 12),
+           register_name[rs1], cpu->registers[rs1]);
     cpu->pc += 4;
     uint32_t addr = cpu->registers[rs1] + signExtension(imm, 12);
     int16_t value = load2s(addr,  cpu->memory);
@@ -184,8 +184,8 @@ void lh(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
 }
 
 void lw(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    printf("lw\t%s, %d(%s)\n", register_name[rd], signExtension(imm, 12),
-           register_name[rs1]);
+    printf("lw\t%s, %d(%s:%08x)\n", register_name[rd], signExtension(imm, 12),
+           register_name[rs1], cpu->registers[rs1]);
     cpu->pc += 4;
     uint32_t addr = cpu->registers[rs1] + signExtension(imm, 12);
     uint32_t value = load4(addr, cpu->memory);
@@ -214,8 +214,8 @@ void lhu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
 }
 
 void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
-    printf("sb\t%s, %d(%s)\n", register_name[rs2], signExtension(imm, 12),
-           register_name[rs1]);
+    printf("sb\t%s, %d(%s:%08x)\n", register_name[rs2], signExtension(imm, 12),
+           register_name[rs1], cpu->registers[rs1]);
     cpu->pc += 4;
     uint32_t addr = cpu->registers[rs1] + signExtension(imm, 12);
     uint8_t value = cpu->registers[rs2];
@@ -224,8 +224,8 @@ void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 }
 
 void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
-    printf("sh\t%s, %d(%s)\n", register_name[rs2], signExtension(imm, 12),
-           register_name[rs1]);
+    printf("sh\t%s, %d(%s:%08x)\n", register_name[rs2], signExtension(imm, 12),
+           register_name[rs1], cpu->registers[rs1]);
     cpu->pc += 4;
     uint32_t addr = cpu->registers[rs1] + signExtension(imm, 12);
     uint16_t value = cpu->registers[rs2];
@@ -234,8 +234,8 @@ void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 }
 
 void sw(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
-    printf("sw\t%s, %d(%s)\n", register_name[rs2], signExtension(imm, 12),
-           register_name[rs1]);
+    printf("sw\t%s, %d(%s:%08x)\n", register_name[rs2], signExtension(imm, 12),
+           register_name[rs1], cpu->registers[rs1]);
     cpu->pc += 4;
     uint32_t addr = cpu->registers[rs1] + signExtension(imm, 12);
     uint32_t value = cpu->registers[rs2];

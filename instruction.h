@@ -12,7 +12,7 @@
 void trace(char *c, ...) { }
 #endif
 
-//符号拡張
+// Code expansion
 int32_t signExtension(uint32_t imm, uint8_t width) {
     uint32_t mask = 0xFFFFFFFF;
     if (imm >> (width - 1)) {
@@ -455,7 +455,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     bgeu(cpu, imm, rs2, rs1);
                     break;
                 default:
-                    trace("未実装\n");
+                    trace("Unimplemented\n");
                     break;
             }
             break;
@@ -478,7 +478,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     lhu(cpu, imm, rs1, rd);
                     break;
                 default:
-                    trace("未実装\n");
+                    trace("Unimplemented\n");
                     break;
             }
             break;
@@ -495,7 +495,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     sw(cpu, imm, rs2, rs1);
                     break;
                 default:
-                    trace("未実装\n");
+                    trace("Unimplemented\n");
                     break;
             }
             break;
@@ -531,7 +531,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     }
                     break;
                 default:
-                    trace("未実装\n");
+                    trace("Unimplemented\n");
                     break;
             }
             break;
@@ -570,16 +570,16 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     ando(cpu, rs2, rs1, rd);
                     break;
                 default:
-                    trace("未実装\n");
+                    trace("Unimplemented\n");
                     break;
             }
             break;
         default:
-            trace("未実装\n");
+            trace("Unimplemented\n");
             break;
     }
 
-    //ゼロレジスタはゼロ固定
+    // zero register is always ZERO, like /dev/zero
     cpu->registers[0] = 0;
     return;
 }

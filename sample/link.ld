@@ -2,8 +2,8 @@ OUTPUT_ARCH("riscv:rv32")
 ENTRY(_start)
 
 MEMORY{
-    ROM : ORIGIN = 0x0000, LENGTH = 1k
-    RAM : ORIGIN = 0x0400, LENGTH = 1k
+    ROM : ORIGIN = 0x0000, LENGTH = 16k
+    RAM : ORIGIN = 0x0400, LENGTH = 16k
 }
 
 SECTIONS{

@@ -1,4 +1,7 @@
 *.o
+*.d
 rv32i_emu
 sample/*.elf
 sample/*.bin
+mmap/*
+!mmap/Makefile

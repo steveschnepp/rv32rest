@@ -4,17 +4,22 @@
 #include <stdint.h>
 #include <string.h>
 
-#define ROM_SIZE 1024
-#define RAM_SIZE 1024
-#define MEM_SIZE (ROM_SIZE + RAM_SIZE)
-#define ROM_SIZE_32 (ROM_SIZE / sizeof(uint32_t))
-#define RAM_SIZE_32 (RAM_SIZE / sizeof(uint32_t))
-#define MEM_SIZE_32 (MEM_SIZE / sizeof(uint32_t))
+struct memory_region {
+	uint32_t size;
+	uint32_t offset;
+	uint8_t *ptr;
+};
 
 typedef struct {
     uint32_t pc;
     uint32_t registers[32];
-    uint32_t memory[MEM_SIZE_32];
+
+    struct memory_region ROM;
+    struct memory_region RAM;
+    struct memory_region IN;
+    struct memory_region OUT;
+
+    uint32_t *memory;
 } Cpu;
 
 char* register_name[] = {"zero", "ra", "sp",  "gp",  "tp", "t0", "t1", "t2",
@@ -25,9 +30,9 @@ char* register_name[] = {"zero", "ra", "sp",  "gp",  "tp", "t0", "t1", "t2",
 void initCpu(Cpu* cpu) {
     cpu->pc = 0x0000;
     memset(cpu->registers, 0, sizeof(cpu->registers));
-    memset(cpu->memory, 0, sizeof(cpu->memory));
 
-    cpu->registers[2] = 0x0800;
+    // Init stack pointer to end of MEM_SIZE
+    cpu->registers[2] = cpu->RAM.offset + cpu->RAM.size;
     return;
 }
 

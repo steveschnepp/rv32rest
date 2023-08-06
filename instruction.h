@@ -12,8 +12,34 @@
 void trace(char *c, ...) { }
 #endif
 
+#ifndef signExtension
+#define signExtension signExtension_for
+#endif
+
 // Code expansion
-int32_t signExtension(uint32_t imm, uint8_t width) {
+int32_t signExtension_sw(uint32_t imm, uint8_t width) {
+    int32_t s;
+	switch(width) {
+	    default:
+		    assert(0);
+	    case 12:
+		    if (imm & (1<<11)) imm |= ~0xFFF;
+		    break;
+	    case 13:
+		    if (imm & (1<<12)) imm |= ~0x1FFF;
+		    break;
+	    case 16:
+		    if (imm & (1<<15)) imm |= ~0xFFFF;
+		    break;
+	    case 20:
+		    if (imm & (1<<19)) imm |= ~0xFFFFF;
+		    break;
+	}
+	s = (int32_t) imm;
+	return s;
+}
+
+int32_t signExtension_for(uint32_t imm, uint8_t width) {
     uint32_t mask = 0xFFFFFFFF;
     if (imm >> (width - 1)) {
         for (uint8_t i = 0; i < width; i++) {

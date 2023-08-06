@@ -32,5 +32,5 @@ SECTIONS{
     .rodata : {
         . = ALIGN(4);
         *(.rodata)
-    } > RAM
+    } > ROM
 }

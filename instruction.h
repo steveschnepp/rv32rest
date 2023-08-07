@@ -152,12 +152,12 @@ void store4(uint32_t ofs, uint32_t val, uint32_t *memory) {
 	trace("s4u(%04x)=%08x\n", ofs, val);
 	*(uint32_t*)(image + ofs) = val;
 }
-void store2(uint32_t ofs, uint32_t val, uint32_t *memory) {
+void store2(uint32_t ofs, uint16_t val, uint32_t *memory) {
 	uint8_t* image = (uint8_t*) memory;
 	trace("s2u(%04x)=%08x\n", ofs, val);
 	*(uint16_t*)(image + ofs) = val;
 }
-void store1(uint32_t ofs, uint32_t val, uint32_t *memory) {
+void store1(uint32_t ofs, uint8_t val, uint32_t *memory) {
 	uint8_t* image = (uint8_t*) memory;
 	trace("s1u(%04x)=%08x\n", ofs, val);
 	*(uint8_t*)(image + ofs) = val;

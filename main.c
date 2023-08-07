@@ -69,10 +69,10 @@ int main(int argc, char** argv) {
 
 	cpu.memory = get4g();
 
-	cpu.ROM = mmap_file(*argv, O_RDONLY, cpu.memory, 0); argv++;
-	cpu.RAM = mmap_file(*argv, O_RDWR, cpu.memory, 0x8000); argv++;
+	cpu.ROM = mmap_file(*argv, O_RDONLY, cpu.memory, 0x00000000); argv++;
+	cpu.RAM = mmap_file(*argv, O_RDWR,   cpu.memory, 0x01000000); argv++;
 	cpu.IN  = mmap_file(*argv, O_RDONLY, cpu.memory, 0x08000000); argv++;
-	cpu.OUT = mmap_file(*argv, O_RDWR, cpu.memory, 0x08100000); argv++;
+	cpu.OUT = mmap_file(*argv, O_RDWR,   cpu.memory, 0x08100000); argv++;
 
 	initCpu(&cpu);
 

@@ -19,7 +19,7 @@ typedef struct {
     struct memory_region IN;
     struct memory_region OUT;
 
-    uint32_t *memory;
+    uint8_t *memory;
 } Cpu;
 
 char* register_name[] = {"zero", "ra", "sp",  "gp",  "tp", "t0", "t1", "t2",
@@ -36,6 +36,9 @@ void initCpu(Cpu* cpu) {
     return;
 }
 
-uint32_t fetch(Cpu* cpu) { return cpu->memory[cpu->pc / 4]; }
+uint32_t fetch(Cpu* cpu) {
+    uint32_t* instructions = (uint32_t*) cpu->memory;
+    return instructions[cpu->pc / 4];
+}
 
 #endif

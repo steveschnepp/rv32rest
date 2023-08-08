@@ -38,7 +38,7 @@ void *get4g() {
 }
 
 
-struct memory_region mmap_file(char *file, int mode, uint32_t *memory, uint32_t offset) {
+struct memory_region mmap_file(char *file, int mode, uint8_t *memory, uint32_t offset) {
 	int fd = open(file, mode);
 	if (fd == -1) handle_error("mmap_file/open");
 
@@ -50,9 +50,8 @@ struct memory_region mmap_file(char *file, int mode, uint32_t *memory, uint32_t 
 	struct memory_region r = {0};
 	r.size = len;
 	r.offset = offset;
-	uint8_t *vm_image = (uint8_t *) memory;
-	r.ptr = mmap(vm_image+offset, len, open2prot(mode), MAP_SHARED, fd, 0);
-	assert(r.ptr == vm_image + r.offset);
+	r.ptr = mmap(memory + offset, len, open2prot(mode), MAP_SHARED, fd, 0);
+	assert(r.ptr == memory + r.offset);
 
 	return r;
 }

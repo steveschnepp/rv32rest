@@ -147,50 +147,43 @@ void bgeu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     return;
 }
 
-void store4(uint32_t ofs, uint32_t val, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
+void store4(uint32_t ofs, uint32_t val, uint8_t *memory) {
 	trace("s4u(%04x)=%08x\n", ofs, val);
-	*(uint32_t*)(image + ofs) = val;
+	*(uint32_t*)(memory + ofs) = val;
 }
-void store2(uint32_t ofs, uint16_t val, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
+void store2(uint32_t ofs, uint16_t val, uint8_t *memory) {
 	trace("s2u(%04x)=%08x\n", ofs, val);
-	*(uint16_t*)(image + ofs) = val;
+	*(uint16_t*)(memory + ofs) = val;
 }
-void store1(uint32_t ofs, uint8_t val, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
+void store1(uint32_t ofs, uint8_t val, uint8_t *memory) {
 	trace("s1u(%04x)=%08x\n", ofs, val);
-	*(uint8_t*)(image + ofs) = val;
+	*(uint8_t*)(memory + ofs) = val;
 }
 
-uint32_t load4(uint32_t ofs, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
-	uint32_t val = *(uint32_t*)(image + ofs);
+uint32_t load4(uint32_t ofs, uint8_t *memory) {
+	uint32_t val = *(uint32_t*)(memory + ofs);
 	trace("l4u(%04x)=%08x\n", ofs, val);
 	return val;
 }
-uint16_t load2(uint32_t ofs, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
-	uint16_t val = *(uint16_t*)(image + ofs);
+uint16_t load2(uint32_t ofs, uint8_t *memory) {
+	uint16_t val = *(uint16_t*)(memory + ofs);
 	trace("l2u(%04x)=%08x\n", ofs, val);
 	return val;
 }
-uint8_t load1(uint32_t ofs, uint32_t *memory) {
+uint8_t load1(uint32_t ofs, uint8_t *memory) {
 	uint8_t* image = (uint8_t*) memory;
 	uint8_t val = *(uint8_t*)(image + ofs);
 	trace("l1u(%04x)=%08x\n", ofs, val);
 	return val;
 }
 
-int16_t load2s(uint32_t ofs, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
-	uint16_t val = *(uint16_t*)(image + ofs);
+int16_t load2s(uint32_t ofs, uint8_t *memory) {
+	uint16_t val = *(uint16_t*)(memory + ofs);
 	trace("l2s(%04x)=%08x\n", ofs, val);
 	return val;
 }
-int8_t load1s(uint32_t ofs, uint32_t *memory) {
-	uint8_t* image = (uint8_t*) memory;
-	int8_t val = *(int8_t*)(image + ofs);
+int8_t load1s(uint32_t ofs, uint8_t *memory) {
+	int8_t val = *(int8_t*)(memory + ofs);
 	trace("l1s(%04x)=%08x\n", ofs, val);
 	return val;
 }

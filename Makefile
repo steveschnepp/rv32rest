@@ -1,10 +1,11 @@
 PROGRAM = rv32i_emu
 SRCS = main.c
 OBJS = $(SRCS:.c=.o)
-OPTIM=0
-DEBUG=-DDEBUG
-CFLAGS = -Wall -O$(OPTIM) -g
-CFLAGS+=$(DEBUG)
+OPTIM = 0
+DEBUG = -DDEBUG
+CFLAGS = -Werror -Wall
+CFLAGS += -O$(OPTIM) -g
+CFLAGS += $(DEBUG)
 CC = gcc
 
 SUBDIRS := sample mmap

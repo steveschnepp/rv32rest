@@ -95,8 +95,10 @@ void jalr(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
 
 void beq(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 13);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
     trace("beq\t%s, %s, %x\n", register_name[rs1], register_name[rs2], addr);
-    if (cpu->registers[rs1] == cpu->registers[rs2]) {
+    if (op1 == op2) {
         set_pc(cpu, addr);
     } else {
         increment_pc(cpu);
@@ -106,8 +108,10 @@ void beq(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void bne(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 13);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
     trace("bne\t%s, %s, %x\n", register_name[rs1], register_name[rs2], addr);
-    if (cpu->registers[rs1] != cpu->registers[rs2]) {
+    if (op1 != op2) {
         set_pc(cpu, addr);
     } else {
         increment_pc(cpu);
@@ -117,8 +121,10 @@ void bne(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void blt(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 13);
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
     trace("blt\t%s, %s, %x\n", register_name[rs1], register_name[rs2], addr);
-    if ((int32_t)(cpu->registers[rs1]) < (int32_t)(cpu->registers[rs2])) {
+    if (op1 < op2) {
         set_pc(cpu, addr);
     } else {
         increment_pc(cpu);
@@ -128,8 +134,10 @@ void blt(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void bge(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 13);
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
     trace("bge\t%s, %s, %x\n", register_name[rs1], register_name[rs2], addr);
-    if ((int32_t)(cpu->registers[rs1]) >= (int32_t)(cpu->registers[rs2])) {
+    if (op1 >= op2) {
         set_pc(cpu, addr);
     } else {
         increment_pc(cpu);
@@ -139,8 +147,10 @@ void bge(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void bltu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 13);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
     trace("bltu\t%s, %s, %x\n", register_name[rs1], register_name[rs2], addr);
-    if (cpu->registers[rs1] < cpu->registers[rs2]) {
+    if (op1 < op2) {
         set_pc(cpu, addr);
     } else {
         increment_pc(cpu);
@@ -150,8 +160,10 @@ void bltu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 
 void bgeu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 13);
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
     trace("bgeu\t%s, %s, %x\n", register_name[rs1], register_name[rs2], addr);
-    if (cpu->registers[rs1] >= cpu->registers[rs2]) {
+    if (op1 >= op2) {
         set_pc(cpu, addr);
     } else {
         increment_pc(cpu);

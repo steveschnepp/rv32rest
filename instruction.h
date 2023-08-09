@@ -10,6 +10,19 @@
 #define trace printf
 #else
 void trace(char *c, ...) { }
+void trace_store(char *c, ...) { }
+#endif
+
+#ifdef DEBUG_LOAD
+#define trace_load printf
+#else
+void trace_load(char *c, ...) { }
+#endif
+
+#ifdef DEBUG_STORE
+#define trace_store printf
+#else
+void trace_store(char *c, ...) { }
 #endif
 
 #ifndef sign_expansion
@@ -62,8 +75,7 @@ void increment_pc(Cpu* cpu) {
 void store_rd(Cpu* cpu, uint8_t rd, uint32_t value) {
     if (rd) {
         cpu->registers[rd] = value;
-        trace("   ");
-    } else trace("wz ");
+    } else trace("\t write to zero ignored\n");
 }
 
 void lui(Cpu* cpu, uint32_t imm, uint8_t rd) {
@@ -175,43 +187,43 @@ void bgeu(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
 }
 
 void store4(uint32_t ofs, uint32_t val, uint8_t *memory) {
-	trace("s4u(%04x)=%08x\n", ofs, val);
+	trace_store("s4u(%04x)=%08x\n", ofs, val);
 	*(uint32_t*)(memory + ofs) = val;
 }
 void store2(uint32_t ofs, uint16_t val, uint8_t *memory) {
-	trace("s2u(%04x)=%08x\n", ofs, val);
+	trace_store("s2u(%04x)=%08x\n", ofs, val);
 	*(uint16_t*)(memory + ofs) = val;
 }
 void store1(uint32_t ofs, uint8_t val, uint8_t *memory) {
-	trace("s1u(%04x)=%08x\n", ofs, val);
+	trace_store("s1u(%04x)=%08x\n", ofs, val);
 	*(uint8_t*)(memory + ofs) = val;
 }
 
 uint32_t load4(uint32_t ofs, uint8_t *memory) {
 	uint32_t val = *(uint32_t*)(memory + ofs);
-	trace("l4u(%04x)=%08x\n", ofs, val);
+	trace_load("l4u(%04x)=%08x\n", ofs, val);
 	return val;
 }
 uint16_t load2(uint32_t ofs, uint8_t *memory) {
 	uint16_t val = *(uint16_t*)(memory + ofs);
-	trace("l2u(%04x)=%08x\n", ofs, val);
+	trace_load("l2u(%04x)=%08x\n", ofs, val);
 	return val;
 }
 uint8_t load1(uint32_t ofs, uint8_t *memory) {
 	uint8_t* image = (uint8_t*) memory;
 	uint8_t val = *(uint8_t*)(image + ofs);
-	trace("l1u(%04x)=%08x\n", ofs, val);
+	trace_load("l1u(%04x)=%08x\n", ofs, val);
 	return val;
 }
 
 int16_t load2s(uint32_t ofs, uint8_t *memory) {
 	uint16_t val = *(uint16_t*)(memory + ofs);
-	trace("l2s(%04x)=%08x\n", ofs, val);
+	trace_load("l2s(%04x)=%08x\n", ofs, val);
 	return val;
 }
 int8_t load1s(uint32_t ofs, uint8_t *memory) {
 	int8_t val = *(int8_t*)(memory + ofs);
-	trace("l1s(%04x)=%08x\n", ofs, val);
+	trace_load("l1s(%04x)=%08x\n", ofs, val);
 	return val;
 }
 
@@ -226,70 +238,63 @@ void lb(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
 }
 
 void lh(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    trace("lh\t%s, %d(%s:%08x)\n", register_name[rd], sign_expansion(imm, 12),
-           register_name[rs1], cpu->registers[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("lh\t%s, %d(%s) # %08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     int16_t value = load2s(addr,  cpu->memory);
     store_rd(cpu, rd, value);
     return;
 }
 
 void lw(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    trace("lw\t%s, %d(%s:%08x)\n", register_name[rd], sign_expansion(imm, 12),
-           register_name[rs1], cpu->registers[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("lw\t%s, %d(%s) # %08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     uint32_t value = load4(addr, cpu->memory);
     store_rd(cpu, rd, value);
     return;
 }
 
 void lbu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    trace("lbu\t%s, %d(%s)\n", register_name[rd], sign_expansion(imm, 12),
-           register_name[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("lbu\t%s, %d(%s) # %08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     uint8_t value = load1(addr, cpu->memory);
     store_rd(cpu, rd, value);
     return;
 }
 
 void lhu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    trace("lhu\t%s, %d(%s)\n", register_name[rd], sign_expansion(imm, 12),
-           register_name[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("lhu\t%s, %d(%s) # %08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     uint16_t value = load2s(addr, cpu->memory);
     store_rd(cpu, rd, value);
     return;
 }
 
 void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
-    trace("sb\t%s, %d(%s:%08x)\n", register_name[rs2], sign_expansion(imm, 12),
-           register_name[rs1], cpu->registers[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("sb\t%s, %d(%s) # %08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     uint8_t value = cpu->registers[rs2];
     store1(addr, value, cpu->memory);
     return;
 }
 
 void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
-    trace("sh\t%s, %d(%s:%08x)\n", register_name[rs2], sign_expansion(imm, 12),
-           register_name[rs1], cpu->registers[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("sh\t%s, %d(%s) # %08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     uint16_t value = cpu->registers[rs2];
     store2(addr, value, cpu->memory);
     return;
 }
 
 void sw(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
-    trace("sw\t%s, %d(%s:%08x)\n", register_name[rs2], sign_expansion(imm, 12),
-           register_name[rs1], cpu->registers[rs1]);
-    increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("sw\t%s, %d(%s) # %08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], addr);
+    increment_pc(cpu);
     uint32_t value = cpu->registers[rs2];
     store4(addr, value, cpu->memory);
     return;

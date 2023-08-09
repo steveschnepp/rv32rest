@@ -436,8 +436,8 @@ void sltu(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     return;
 }
 
-void xoro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
-    trace("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
+void xor(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+    trace("xor\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
     uint32_t op1 = cpu->registers[rs1];
@@ -469,7 +469,7 @@ void sra(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     return;
 }
 
-void oro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+void or(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
@@ -480,7 +480,7 @@ void oro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     return;
 }
 
-void ando(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
+void and(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("and\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
@@ -644,7 +644,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     sltu(cpu, rs2, rs1, rd);
                     break;
                 case 0b100:
-                    xoro(cpu, rs2, rs1, rd);
+                    xor(cpu, rs2, rs1, rd);
                     break;
                 case 0b101:
                     if (funct7 == 0) {
@@ -654,10 +654,10 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     }
                     break;
                 case 0b110:
-                    oro(cpu, rs2, rs1, rd);
+                    or(cpu, rs2, rs1, rd);
                     break;
                 case 0b111:
-                    ando(cpu, rs2, rs1, rd);
+                    and(cpu, rs2, rs1, rd);
                     break;
                 default:
                     trace("Unimplemented\n");

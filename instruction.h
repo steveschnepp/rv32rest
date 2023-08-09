@@ -296,7 +296,8 @@ void addi(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     trace("addi\t%s, %s, %d\n", register_name[rd], register_name[rs1],
            sign_expansion(imm, 12));
     increment_pc(cpu);
-    store_rd(cpu, rd, cpu->registers[rs1] + sign_expansion(imm, 12));
+    uint32_t value = cpu->registers[rs1] + sign_expansion(imm, 12);
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -304,65 +305,90 @@ void slti(Cpu* cpu, uint16_t imm, uint8_t rs1, uint8_t rd) {
     trace("slti\t%s, %s, %d\n", register_name[rd], register_name[rs1],
            sign_expansion(imm, 12));
     increment_pc(cpu);
-    store_rd(cpu, rd, ((int32_t)(cpu->registers[rs1]) < sign_expansion(imm, 12)) ? 1 : 0);
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs1];
+    uint32_t value = op1 < op2 ? 1 : 0;
+    store_rd(cpu, rd, value);
     return;
 }
 
 void sltiu(Cpu* cpu, uint16_t imm, uint8_t rs1, uint8_t rd) {
     trace("sltiu\t%s, %s, %d\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1] < imm) ? 1 : 0);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = imm;
+    uint32_t value = op1 < op2 ? 1 : 0;
+    store_rd(cpu, rd, value);
     return;
 }
 
 void xori(Cpu* cpu, uint16_t imm, uint8_t rs1, uint8_t rd) {
     trace("xori\t%s, %s, 0x%x\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1] ^ imm) & 0x0FFF);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = imm;
+    uint32_t value = (op1 ^ op2) & 0x0FFF;
+    store_rd(cpu, rd, value);
     return;
 }
 
 void ori(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     trace("ori\t%s, %s, 0x%x\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1] | imm) & 0x0FFF);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = imm;
+    uint32_t value = (op1 | op2) & 0x0FFF;
+    store_rd(cpu, rd, value);
     return;
 }
 
 void andi(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     trace("andi\t%s, %s, 0x%x\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1] & imm) & 0x0FFF);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = imm;
+    uint32_t value = (op1 & op2) & 0x0FFF;
+    store_rd(cpu, rd, value);
     return;
 }
 
 void slli(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     trace("slli\t%s, %s, 0x%x\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, cpu->registers[rs1] << (0x1F & imm));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = imm;
+    uint32_t value = op1 << (0x1F & op2);
+    store_rd(cpu, rd, value);
     return;
 }
 
 void srli(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     trace("srli\t%s, %s, 0x%x\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, cpu->registers[rs1] >> (0x1F & imm));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = imm;
+    uint32_t value = op1 >> (0x1F & op2);
+    store_rd(cpu, rd, value);
     return;
 }
 
 void srai(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     trace("srai\t%s, %s, 0x%x\n", register_name[rd], register_name[rs1], imm);
     increment_pc(cpu);
-    store_rd(cpu, rd, (int32_t)(cpu->registers[rs1]) >> (0x1F & imm));
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = imm;
+    int32_t value = op1 >> (0x1F & op2);
+    store_rd(cpu, rd, value);
     return;
 }
 
 void add(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
-    trace("add\t%s, %s, %s\n", register_name[rd], register_name[rs1],
-           register_name[rs2]);
+    trace("add\t%s, %s, %s\n", register_name[rd], register_name[rs1], register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd,
-        (int32_t)(cpu->registers[rs1]) + (int32_t)(cpu->registers[rs2]));
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
+    int32_t value = op1 + op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -370,8 +396,10 @@ void sub(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("sub\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd,
-        (int32_t)(cpu->registers[rs1]) - (int32_t)(cpu->registers[rs2]));
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
+    int32_t value = op1 - op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -379,7 +407,10 @@ void sll(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("sll\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1]) << (cpu->registers[rs2]));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
+    uint32_t value = op1 << op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -387,9 +418,10 @@ void slt(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("slt\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd,
-        ((int32_t)(cpu->registers[rs1]) < (int32_t)(cpu->registers[rs2])) ? 1
-                                                                          : 0);
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
+    int32_t value = op1 < op2 ? 1 : 0;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -397,8 +429,10 @@ void sltu(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("sltu\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd,
-        ((cpu->registers[rs1]) < (cpu->registers[rs2])) ? 1 : 0);
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
+    uint32_t value = op1 < op2 ? 1 : 0;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -406,7 +440,10 @@ void xoro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1]) ^ (cpu->registers[rs2]));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
+    uint32_t value = op1 ^ op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -414,7 +451,10 @@ void srl(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("srl\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1]) << (cpu->registers[rs2]));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
+    uint32_t value = op1 >> op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -422,8 +462,10 @@ void sra(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("sra\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd, (int32_t)(cpu->registers[rs1])
-                         << (cpu->registers[rs2]));
+    int32_t op1 = cpu->registers[rs1];
+    int32_t op2 = cpu->registers[rs2];
+    int32_t value = op1 >> op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -431,7 +473,10 @@ void oro(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1]) | (cpu->registers[rs2]));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
+    uint32_t value = op1 | op2;
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -439,7 +484,10 @@ void ando(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     trace("and\t%s, %s, %s\n", register_name[rd], register_name[rs1],
            register_name[rs2]);
     increment_pc(cpu);
-    store_rd(cpu, rd, (cpu->registers[rs1]) & (cpu->registers[rs2]));
+    uint32_t op1 = cpu->registers[rs1];
+    uint32_t op2 = cpu->registers[rs2];
+    uint32_t value = op1 & op2;
+    store_rd(cpu, rd, value);
     return;
 }
 

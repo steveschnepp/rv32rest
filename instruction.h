@@ -89,7 +89,7 @@ void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
 }
 
 void jalr(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    uint32_t addr = cpu->pc + sign_expansion(imm, 12);
+    uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     trace("jalr\t%s, %s, %x\n", register_name[rd], register_name[rs1], addr);
     store_rd(cpu, rd, cpu->pc + 4);
     set_pc(cpu, addr);

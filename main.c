@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <inttypes.h>
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -28,12 +29,12 @@ void handle_error(char *what) {
 	exit(EXIT_FAILURE);
 }
 
-/* get a 4G contiguous mapping */
-void *get4g() {
-	void *ptr = mmap(NULL, 0xFFFFFFFF, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
-	if (ptr == MAP_FAILED) handle_error("get4g/mmap");
+/* get a virtual mapping of contiguous memory */
+void *reserve_memory(uint32_t size) {
+	void *ptr = mmap(NULL, size, PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, 0, 0);
+	if (ptr == MAP_FAILED) handle_error("reserve_memory/mmap");
 
-	munmap(ptr, 0xFFFFFFFF);
+	munmap(ptr, size);
 	return ptr;
 }
 
@@ -66,8 +67,10 @@ int main(int argc, char** argv) {
 
 	Cpu cpu;
 
-	cpu.memory = get4g();
+	// allocate 1G
+	cpu.memory = reserve_memory(0x10000000);
 
+	// Everything has to fit into 0x00000000 - 0x10000000
 	cpu.ROM = mmap_file(*argv, O_RDONLY, cpu.memory, 0x00000000); argv++;
 	cpu.RAM = mmap_file(*argv, O_RDWR,   cpu.memory, 0x01000000); argv++;
 	cpu.IN  = mmap_file(*argv, O_RDONLY, cpu.memory, 0x08000000); argv++;
@@ -81,7 +84,7 @@ int main(int argc, char** argv) {
 	while(1) {
 		static uint64_t loop_cnt = 0;
 		uint32_t instruction = fetch(&cpu);
-		trace("% 6ld %4x: %08x\t\t", loop_cnt, cpu.pc, instruction);
+		trace("%10" PRIu64 " %4x: %08x\t\t", loop_cnt, cpu.pc, instruction);
 		execution(&cpu, instruction);
 		loop_cnt++;
 
@@ -94,7 +97,7 @@ int main(int argc, char** argv) {
 #endif
 		if (!__builtin_expect(cpu.pc, 1)) {
 			// End when the program counter returns to 0
-			printf("Finish in %lx cycles.\n", loop_cnt);
+			printf("Finish in %" PRIx64 " cycles.\n", loop_cnt);
 			break;
 		}
 

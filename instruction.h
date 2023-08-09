@@ -60,7 +60,10 @@ void increment_pc(Cpu* cpu) {
 }
 
 void store_rd(Cpu* cpu, uint8_t rd, uint32_t value) {
-    cpu->registers[rd] = value;
+    if (rd) {
+        cpu->registers[rd] = value;
+        trace("   ");
+    } else trace("wz ");
 }
 
 void lui(Cpu* cpu, uint32_t imm, uint8_t rd) {

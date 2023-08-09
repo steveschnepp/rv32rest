@@ -678,7 +678,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
     }
 
     // zero register is always ZERO, like /dev/zero
-    cpu->registers[0] = 0;
+    assert(! cpu->registers[0]);
     return;
 }
 

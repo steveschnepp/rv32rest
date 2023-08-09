@@ -228,8 +228,8 @@ int8_t load1s(uint32_t ofs, uint8_t *memory) {
 }
 
 void lb(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
-    trace("lb\t%s, %d(%s:%08x)\n", register_name[rd], sign_expansion(imm, 12),
-           register_name[rs1], cpu->registers[rs1]);
+    uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
+    trace("lb\t%s, %d(%s) # %08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr);
     increment_pc(cpu);
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     int8_t value = load1s(addr, cpu->memory);

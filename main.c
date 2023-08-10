@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <assert.h>
+#include <string.h>
+
 
 
 #include "cpu.h"
@@ -57,6 +59,23 @@ struct memory_region mmap_file(char *file, int mode, uint8_t *memory, uint32_t o
 	return r;
 }
 
+static
+int max_loop(uint64_t loop_cnt) {
+#ifdef MAX_LOOPS
+	if (__builtin_expect(loop_cnt, 1) > MAX_LOOPS) {
+			return 1;
+	}
+#endif
+	return 0;
+}
+
+static
+void yield() {
+#ifdef SLEEP_MS
+	usleep(SLEEP_MS * 1000);
+#endif
+}
+
 int main(int argc, char** argv) {
 	argc --; argv++; // Ignore the program name
 
@@ -81,28 +100,27 @@ int main(int argc, char** argv) {
 	// OUT is always 0-init
 	memset(cpu.OUT.ptr, 0, cpu.OUT.size);
 
-	while(1) {
-		static uint64_t loop_cnt = 0;
-		uint32_t instruction = fetch(&cpu);
+	static uint64_t loop_cnt = 0;
+	do {
+		int32_t instruction = fetch(&cpu);
 		trace("%10" PRIu64 " %4x: %08x\t\t", loop_cnt, cpu.pc, instruction);
 		execution(&cpu, instruction);
 		loop_cnt++;
 
-#if 0
-		if (__builtin_expect(loop_cnt, 1) > 0x0100000000) {
+		if (max_loop(loop_cnt)) {
 			// Stop when looping too many times
 			printf("Timeout.\n");
 			break;
 		}
-#endif
-		if (!__builtin_expect(cpu.pc, 1)) {
-			// End when the program counter returns to 0
-			printf("Finish in %" PRIx64 " cycles.\n", loop_cnt);
-			break;
-		}
+
+		yield();
 
 //		usleep(10 * 1000);
-	}
+
+	} while (__builtin_expect(cpu.pc, 1));
+
+	// End when the program counter returns to 0
+	printf("Finish in %" PRIx64 " cycles.\n", loop_cnt);
 
 	return 0;
 }

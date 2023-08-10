@@ -1,5 +1,5 @@
 PROGRAM = rv32i_emu
-SRCS = main.c
+SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 OPTIM = 0
 DEBUG = -DDEBUG
@@ -19,7 +19,7 @@ $(SUBDIRS):
 	$(MAKE) -C $@ $(MAKECMDGOALS)
 
 $(PROGRAM): $(OBJS)
-	$(CC) $(CFLAGS) -o $(PROGRAM) $(OBJS)
+	$(LINK.o) $(CFLAGS) -o $(PROGRAM) $(OBJS)
 
 .c: *.h
 .c.o:

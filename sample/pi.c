@@ -6,9 +6,9 @@ static double b = 0;
 
 void main() {
 	int s = 1;
-	for (int a = 1; a <= 10; a++) {
+	for (int a = 1; a <= 30; a++) {
 		s = -s;
 		b += s / (2.0 * a + 1);
-		printf("%d %f ", a, b);
+		printf("%d %f ", a, 4*b);
 	}
 }

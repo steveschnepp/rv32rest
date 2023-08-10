@@ -10,9 +10,11 @@ struct memory_region {
 	uint8_t *ptr;
 };
 
+#define NUM_REGISTERS 16
+
 typedef struct {
     uint32_t pc;
-    uint32_t registers[32];
+    uint32_t registers[NUM_REGISTERS];
 
     struct memory_region ROM;
     struct memory_region RAM;

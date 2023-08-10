@@ -413,7 +413,7 @@ void sll(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
            register_name[rs2]);
     increment_pc(cpu);
     uint32_t op1 = cpu->registers[rs1];
-    uint32_t op2 = cpu->registers[rs2];
+    uint32_t op2 = cpu->registers[rs2] & 0x1F;
     uint32_t value = op1 << op2;
     store_rd(cpu, rd, value);
     return;

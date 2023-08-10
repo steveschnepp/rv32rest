@@ -409,12 +409,11 @@ void sub(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
 }
 
 void sll(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
-    trace("sll\t%s, %s, %s\n", register_name[rd], register_name[rs1],
-           register_name[rs2]);
     increment_pc(cpu);
     uint32_t op1 = cpu->registers[rs1];
     uint32_t op2 = cpu->registers[rs2] & 0x1F;
     uint32_t value = op1 << op2;
+    trace("sll\t%s, %s, %s \t# %08x = %08x << %d\n", register_name[rd], register_name[rs1], register_name[rs2], value, op1, op2);
     store_rd(cpu, rd, value);
     return;
 }
@@ -475,12 +474,11 @@ void sra(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
 }
 
 void or(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
-    trace("or\t%s, %s, %s\n", register_name[rd], register_name[rs1],
-           register_name[rs2]);
     increment_pc(cpu);
     uint32_t op1 = cpu->registers[rs1];
     uint32_t op2 = cpu->registers[rs2];
     uint32_t value = op1 | op2;
+    trace("or\t%s, %s, %s \t# %08x = %08x | %08x\n", register_name[rd], register_name[rs1], register_name[rs2], value, op1, op2);
     store_rd(cpu, rd, value);
     return;
 }

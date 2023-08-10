@@ -34,8 +34,18 @@ void initCpu(Cpu* cpu) {
     memset(cpu->registers, 0, sizeof(cpu->registers));
 
     // Init stack pointer to end of MEM_SIZE
-    cpu->registers[2] = cpu->RAM.offset + cpu->RAM.size;
+    cpu->registers[2] = cpu->RAM.offset + cpu->RAM.size - sizeof(Cpu);
     return;
+}
+
+void syncCpu(Cpu* cpu) {
+	void* end_memory = cpu->memory + cpu->RAM.offset + cpu->RAM.size;
+	end_memory -= sizeof(cpu->registers);
+	memcpy(end_memory, cpu->registers, sizeof(cpu->registers));
+	end_memory -= sizeof(uint32_t);
+	memcpy(end_memory, &cpu->pc, sizeof(uint32_t));
+	end_memory -= 4;
+	memcpy(end_memory, "CPU ", 4);
 }
 
 uint32_t fetch(Cpu* cpu) {

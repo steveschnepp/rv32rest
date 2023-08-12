@@ -7,14 +7,12 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <assert.h>
 #include <string.h>
-
-
 
 #include "cpu.h"
 #include "instruction.h"
 #include "log.h"
+#include "assert.h"
 
 int open2prot(int mode) {
 	switch(mode) {
@@ -54,7 +52,7 @@ struct memory_region mmap_file(char *file, int mode, uint8_t *memory, uint32_t o
 	r.size = len;
 	r.offset = offset;
 	r.ptr = mmap(memory + offset, len, open2prot(mode), MAP_SHARED, fd, 0);
-	assert(r.ptr == memory + r.offset);
+	_assert(r.ptr == memory + r.offset);
 
 	return r;
 }
@@ -93,7 +91,7 @@ int main(int argc, char** argv) {
 	cpu.ROM = mmap_file(*argv, O_RDONLY, cpu.memory, 0x00000000); argv++;
 	cpu.RAM = mmap_file(*argv, O_RDWR,   cpu.memory, 0x01000000); argv++;
 	cpu.IN  = mmap_file(*argv, O_RDONLY, cpu.memory, 0x08000000); argv++;
-	cpu.OUT = mmap_file(*argv, O_RDWR,   cpu.memory, 0x08100000); argv++;
+	cpu.OUT = mmap_file(*argv, O_RDWR,   cpu.memory, 0x08800000); argv++;
 
 	initCpu(&cpu);
 

@@ -5,17 +5,25 @@
 
 #include "cpu.h"
 
-void dumpRegister(Cpu* cpu) {
-    for (int i = 0; i < NUM_REGISTERS; i++) {
-        printf("%-5s: 0x%08x", register_name[i], cpu->registers[i]);
-#if NUM_REGISTERS > 16
-        printf("\t");
-        printf("%-5s: 0x%08x", register_name[i+16], cpu->registers[i+16]);
-#endif // NUM_REGISTERS > 16
-        printf("\n");
-    }
-    printf("pc   : 0x%08x\n", cpu->pc);
-    return;
-}
+#ifdef DEBUG
+#define trace printf
+#else
+inline static
+void trace(char *c, ...) { }
+#endif
+
+#ifdef DEBUG_LOAD
+#define trace_load printf
+#else
+inline static
+void trace_load(char *c, ...) { }
+#endif
+
+#ifdef DEBUG_STORE
+#define trace_store printf
+#else
+inline static
+void trace_store(char *c, ...) { }
+#endif
 
 #endif

@@ -29,6 +29,8 @@ void initCpu(Cpu* cpu);
 
 void syncCpu(Cpu* cpu);
 
+void dumpRegister(Cpu* cpu);
+
 uint32_t fetch(Cpu* cpu);
 
 #endif

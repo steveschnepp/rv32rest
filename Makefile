@@ -8,10 +8,8 @@ CFLAGS += -O$(OPTIM) -g
 CFLAGS += $(DEBUG)
 CC = gcc
 
-
 HOST_ARCH=native
 HOST_CPU=native
-OPTIM=s
 CFLAGS+=-march=$(HOST_ARCH) -mtune=$(HOST_CPU)
 
 SUBDIRS := sample mmap

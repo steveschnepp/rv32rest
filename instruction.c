@@ -553,14 +553,68 @@ void fence(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
 void ecall_callback(Cpu* cpu) {
 }
 
+void ebreak_callback(Cpu* cpu) {
+}
+
 static
-void ecall(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+void ecall(Cpu* cpu) {
     increment_pc(cpu);
-    trace("ecall\t%s, %s, %x \t#\n", register_name[rd], register_name[rs1], imm);
+    trace("ecall \t#\n");
     ecall_callback(cpu);
     return;
 }
 
+static
+void ebreak(Cpu* cpu) {
+    increment_pc(cpu);
+    trace("ebreak \t#\n");
+    ebreak_callback(cpu);
+    return;
+}
+
+static
+void csrrw(Cpu* cpu, uint32_t csr, uint8_t rs1, uint8_t rd) {
+    increment_pc(cpu);
+    trace("csrrw\t%s, %s, %x \t#\n", register_name[rd], register_name[rs1], csr);
+    return;
+}
+
+static
+void csrrs(Cpu* cpu, uint32_t csr, uint8_t rs1, uint8_t rd) {
+    increment_pc(cpu);
+    trace("csrrs\t%s, %s, %x \t#\n", register_name[rd], register_name[rs1], csr);
+    return;
+}
+
+static
+void csrrc(Cpu* cpu, uint32_t csr, uint8_t rs1, uint8_t rd) {
+    increment_pc(cpu);
+    trace("csrrc\t%s, %s, %x \t#\n", register_name[rd], register_name[rs1], csr);
+    return;
+}
+
+static
+void csrrwi(Cpu* cpu, uint32_t csr, uint8_t zimm, uint8_t rd) {
+    increment_pc(cpu);
+    trace("csrrwi\t%s, %x, %x \t#\n", register_name[rd], zimm, csr);
+    return;
+}
+
+static
+void csrrsi(Cpu* cpu, uint32_t csr, uint8_t zimm, uint8_t rd) {
+    increment_pc(cpu);
+    trace("csrrsi\t%s, %x, %x \t#\n", register_name[rd], zimm, csr);
+    return;
+}
+
+static
+void csrrci(Cpu* cpu, uint32_t csr, uint8_t zimm, uint8_t rd) {
+    increment_pc(cpu);
+    trace("csrrci\t%s, %x, %x \t#\n", register_name[rd], zimm, csr);
+    return;
+}
+
+__attribute__((noreturn))
 void unsupported_opcode(Cpu* cpu, uint32_t instruction) {
     exit(-1);
 }
@@ -749,7 +803,33 @@ void execution(Cpu* cpu, uint32_t instruction) {
             break;
         case 0b1110011: // ECALL/EBREAK
             imm = (instruction >> 12) & 0x0FFFFF;
-	    ecall(cpu, imm, rs1, rd);
+            switch (funct3) {
+                case 0b000: // ECALL/EBREAK
+                    if (imm == 0) {
+			ecall(cpu);
+                    } else {
+			ebreak(cpu);
+                    }
+                    break;
+                case 0b001:
+                    csrrw(cpu, imm, rs1, rd);
+		    break;
+                case 0b010:
+                    csrrs(cpu, imm, rs1, rd);
+		    break;
+                case 0b011:
+                    csrrc(cpu, imm, rs1, rd);
+		    break;
+                case 0b101:
+                    csrrwi(cpu, imm, rs1, rd);
+		    break;
+                case 0b110:
+                    csrrsi(cpu, imm, rs1, rd);
+		    break;
+                case 0b111:
+                    csrrci(cpu, imm, rs1, rd);
+		    break;
+	    }
             break;
         default: // Unknown opco,de
             trace("** Unimplemented : opcode %x\n", opcode);

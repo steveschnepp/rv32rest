@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <string.h>
+#include <time.h>
 
 #include "cpu.h"
 #include "instruction.h"
@@ -74,6 +76,16 @@ void yield() {
 #endif
 }
 
+uint64_t times() {
+	struct timespec ts;
+	if (clock_gettime(CLOCK_MONOTONIC, &ts) == -1) {
+		perror("clock_gettime");
+		exit(EXIT_FAILURE);
+	}
+	uint64_t t = ts.tv_sec * 1000000ULL + ts.tv_nsec / 1000;
+	return t;
+}
+
 int main(int argc, char** argv) {
 	argc --; argv++; // Ignore the program name
 
@@ -98,14 +110,13 @@ int main(int argc, char** argv) {
 	// OUT is always 0-init
 	memset(cpu.OUT.ptr, 0, cpu.OUT.size);
 
-	static uint64_t loop_cnt = 0;
 	do {
 		int32_t instruction = fetch(&cpu);
-		trace("%10" PRIu64 " %4x: %08x\t\t", loop_cnt, cpu.pc, instruction);
+		trace("%10" PRIu64 " %4x: %08x\t\t", cpu.cycles, cpu.pc, instruction);
 		execution(&cpu, instruction);
-		loop_cnt++;
+		cpu.cycles++;
 
-		if (max_loop(loop_cnt)) {
+		if (max_loop(cpu.cycles)) {
 			// Stop when looping too many times
 			printf("Timeout.\n");
 			break;
@@ -118,7 +129,7 @@ int main(int argc, char** argv) {
 	} while (__builtin_expect(cpu.pc, 1));
 
 	// End when the program counter returns to 0
-	printf("Finish in %" PRIx64 " cycles.\n", loop_cnt);
+	printf("Finish in %" PRIx64 " cycles.\n", cpu.cycles);
 
 	return 0;
 }

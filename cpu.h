@@ -14,6 +14,7 @@ struct memory_region {
 #endif
 
 typedef struct {
+    uint64_t cycles;
     uint32_t pc;
     uint32_t registers[NUM_REGISTERS];
 

@@ -550,9 +550,11 @@ void fence(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+__attribute__((weak))
 void ecall_callback(Cpu* cpu) {
 }
 
+__attribute__((weak))
 void ebreak_callback(Cpu* cpu) {
 }
 
@@ -579,10 +581,38 @@ void csrrw(Cpu* cpu, uint32_t csr, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+__attribute__((weak))
+uint64_t times() {
+	return 0;
+}
+
 static
 void csrrs(Cpu* cpu, uint32_t csr, uint8_t rs1, uint8_t rd) {
     increment_pc(cpu);
-    trace("csrrs\t%s, %s, %x \t#\n", register_name[rd], register_name[rs1], csr);
+    uint64_t c = cpu->cycles;
+    uint64_t t = times();
+    uint32_t value ;
+    switch(csr) {
+	    case 0xC00:
+	    case 0xC02:
+		    value = c;
+		    break;
+	    case 0xC80:
+	    case 0xC82:
+		    value = c >> 32;
+		    break;
+	    case 0xC01:
+		    value = t;
+		    break;
+	    case 0xC81:
+		    value = t >> 32;
+		    break;
+	    default:
+		    value = 0;
+		    break;
+    }
+    trace("csrrs\t%s, %s, %x \t# %x\n", register_name[rd], register_name[rs1], csr, value);
+    store_rd(cpu, rd, value);
     return;
 }
 
@@ -614,6 +644,7 @@ void csrrci(Cpu* cpu, uint32_t csr, uint8_t zimm, uint8_t rd) {
     return;
 }
 
+__attribute__((weak))
 __attribute__((noreturn))
 void unsupported_opcode(Cpu* cpu, uint32_t instruction) {
     exit(-1);

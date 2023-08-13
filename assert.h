@@ -4,8 +4,10 @@
 inline
 static
 void _assert(int i) {
+#ifdef DEBUG
 	char *c = 0;
 	if (!i) *c = ' ';
+#endif
 }
 
 #endif

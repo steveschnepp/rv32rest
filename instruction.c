@@ -550,6 +550,17 @@ void fence(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+void ecall_callback(Cpu* cpu) {
+}
+
+static
+void ecall(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    increment_pc(cpu);
+    trace("ecall\t%s, %s, %x \t#\n", register_name[rd], register_name[rs1], imm);
+    ecall_callback(cpu);
+    return;
+}
+
 void unsupported_opcode(Cpu* cpu, uint32_t instruction) {
     exit(-1);
 }
@@ -736,8 +747,12 @@ void execution(Cpu* cpu, uint32_t instruction) {
             imm = (instruction >> 12) & 0x0FFFFF;
 	    fence(cpu, imm, rs1, rd);
             break;
-        default: // Unknown opcode
-            trace("** Unimplemented\n");
+        case 0b1110011: // ECALL/EBREAK
+            imm = (instruction >> 12) & 0x0FFFFF;
+	    ecall(cpu, imm, rs1, rd);
+            break;
+        default: // Unknown opco,de
+            trace("** Unimplemented : opcode %x\n", opcode);
             unsupported_opcode(cpu, instruction);
             break;
     }

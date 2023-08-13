@@ -243,7 +243,7 @@ static
 void lb(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     int8_t value = load1s(addr, cpu->memory);
-    trace("lb\t%s, %d(%s) \t# @%08x -> %02x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("lb\t%s, %d(%s) \t# %02x <- @%08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store_rd(cpu, rd, value);
     return;
@@ -253,7 +253,7 @@ static
 void lh(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     int16_t value = load2s(addr,  cpu->memory);
-    trace("lh\t%s, %d(%s) \t# @%08x -> %04x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("lh\t%s, %d(%s) \t# %04x <- @%08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store_rd(cpu, rd, value);
     return;
@@ -263,7 +263,7 @@ static
 void lw(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     uint32_t value = load4(addr, cpu->memory);
-    trace("lw\t%s, %d(%s) \t# @%08x -> %08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("lw\t%s, %d(%s) \t# %08x <- @%08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store_rd(cpu, rd, value);
     return;
@@ -273,7 +273,7 @@ static
 void lbu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     uint8_t value = load1(addr, cpu->memory);
-    trace("lbu\t%s, %d(%s) \t# @%08x -> %02x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("lbu\t%s, %d(%s) \t# %02x <- @%08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store_rd(cpu, rd, value);
     return;
@@ -283,7 +283,7 @@ static
 void lhu(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     uint16_t value = load2(addr, cpu->memory);
-    trace("lhu\t%s, %d(%s) \t# @%08x -> %04x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("lhu\t%s, %d(%s) \t# %04x <- @%08x\n", register_name[rd], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store_rd(cpu, rd, value);
     return;
@@ -293,7 +293,7 @@ static
 void sb(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     uint8_t value = cpu->registers[rs2];
-    trace("sb\t%s, %d(%s) \t# @%08x <- %02x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("sb\t%s, %d(%s) \t# %02x -> @%08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store1(addr, value, cpu->memory);
     return;
@@ -303,7 +303,7 @@ static
 void sh(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     uint16_t value = cpu->registers[rs2];
-    trace("sh\t%s, %d(%s) \t# @%08x <- %04x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("sh\t%s, %d(%s) \t# %04x -> @%08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store2(addr, value, cpu->memory);
     return;
@@ -313,7 +313,7 @@ static
 void sw(Cpu* cpu, uint32_t imm, uint8_t rs2, uint8_t rs1) {
     uint32_t addr = cpu->registers[rs1] + sign_expansion(imm, 12);
     uint32_t value = cpu->registers[rs2];
-    trace("sw\t%s, %d(%s) \t# @%08x <- %08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], addr, value);
+    trace("sw\t%s, %d(%s) \t# %08x -> @%08x\n", register_name[rs2], sign_expansion(imm, 12), register_name[rs1], value, addr);
     increment_pc(cpu);
     store4(addr, value, cpu->memory);
     return;

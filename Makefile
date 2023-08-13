@@ -12,7 +12,7 @@ CC = gcc
 HOST_ARCH=native
 HOST_CPU=native
 OPTIM=s
-CFLAGS=-march=$(HOST_ARCH) -mtune=$(HOST_CPU)
+CFLAGS+=-march=$(HOST_ARCH) -mtune=$(HOST_CPU)
 
 SUBDIRS := sample mmap
 TOPTARGETS := all clean

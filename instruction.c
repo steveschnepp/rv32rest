@@ -802,7 +802,7 @@ void execution(Cpu* cpu, uint32_t instruction) {
 	    fence(cpu, imm, rs1, rd);
             break;
         case 0b1110011: // ECALL/EBREAK
-            imm = (instruction >> 12) & 0x0FFFFF;
+            imm = (instruction >> 20) & 0x0FFF;
             switch (funct3) {
                 case 0b000: // ECALL/EBREAK
                     if (imm == 0) {

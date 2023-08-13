@@ -82,7 +82,7 @@ void lui(Cpu* cpu, uint32_t imm, uint8_t rd) {
 static
 void auipc(Cpu* cpu, uint32_t imm, uint8_t rd) {
     uint32_t value = cpu->pc + (imm << 12);
-    trace("auipc\t%s, 0x%x\n", register_name[rd], imm);
+    trace("auipc\t%s, 0x%x \t# %x\n", register_name[rd], imm, value);
     store_rd(cpu, rd, value);
     increment_pc(cpu);
     return;
@@ -91,7 +91,7 @@ void auipc(Cpu* cpu, uint32_t imm, uint8_t rd) {
 static
 void jal(Cpu* cpu, uint32_t imm, uint8_t rd) {
     uint32_t addr = cpu->pc + sign_expansion(imm, 20);
-    trace("jal\t%s, %x \t# @%x\n", register_name[rd], sign_expansion(imm, 20), addr);
+    trace("jal\t%s, %x  \t# @%x\n", register_name[rd], sign_expansion(imm, 20), addr);
     store_rd(cpu, rd, cpu->pc + 4);
     set_pc(cpu, addr);
     return;

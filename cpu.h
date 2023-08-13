@@ -9,7 +9,9 @@ struct memory_region {
 	uint8_t *ptr;
 };
 
+#ifndef NUM_REGISTERS
 #define NUM_REGISTERS 16
+#endif
 
 typedef struct {
     uint32_t pc;

@@ -32,9 +32,9 @@ uint32_t fetch(Cpu* cpu) {
     return instructions[cpu->pc / 4];
 }
 
-void dumpRegister(Cpu* cpu) {
-	if (! cpu->OUT.ptr) return;
-	char* b = (char*) cpu->OUT.ptr + 0x10000;
+int dumpRegister(Cpu* cpu, char *buf) {
+	if (! buf) return 0;
+	char *b = buf;
 	memset(b, 0, 1024);
     for (int i = 0; i < NUM_REGISTERS && (NUM_REGISTERS > 16 && i+16 < NUM_REGISTERS ); i++) {
         b += sprintf(b, "%-5s: 0x%08x", register_name[i], cpu->registers[i]);
@@ -45,4 +45,6 @@ void dumpRegister(Cpu* cpu) {
         b += sprintf(b, "\n");
     }
     b += sprintf(b, "pc   : 0x%08x\n", cpu->pc);
+
+    return b - buf;
 }

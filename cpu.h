@@ -29,7 +29,7 @@ void initCpu(Cpu* cpu);
 
 void syncCpu(Cpu* cpu);
 
-void dumpRegister(Cpu* cpu);
+int dumpRegister(Cpu* cpu, char* buf);
 
 uint32_t fetch(Cpu* cpu);
 

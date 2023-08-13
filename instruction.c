@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "log.h"
 #include "assert.h"
@@ -529,9 +530,24 @@ void and(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
 }
 
 static
+void fence_decode(uint8_t i, char* buf) {
+	if (i & (1<<3)) strcat(buf, "i");
+	if (i & (1<<2)) strcat(buf, "o");
+	if (i & (1<<1)) strcat(buf, "r");
+	if (i & (1<<0)) strcat(buf, "w");
+}
+
+static
 void fence(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     increment_pc(cpu);
-    trace("fence\t%s, %s, %d \t# noop\n", register_name[rd], register_name[rs1], imm);
+    char read[5] = {0};
+    char write[5] = {0};
+    uint8_t r = (imm >> 12) & 0xF;
+    uint8_t w = (imm >> 8) & 0xF;
+    fence_decode(r, read);
+    fence_decode(w, write);
+    trace("fence\t%s, %s, %x \t# %s, %s\n", register_name[rd], register_name[rs1], imm, read, write);
+    return;
 }
 
 void unsupported_opcode(Cpu* cpu, uint32_t instruction) {

@@ -6,7 +6,6 @@
 
 #ifdef BIT_COMPRESS
 
-volatile
 uint32_t bitfields[BITSET_SIZE / (sizeof(uint32_t) * 8)];
 
 void setbit(uint32_t bit, bool value)
@@ -31,7 +30,6 @@ bool getbit(uint32_t bit)
 
 #else
 
-volatile
 bool bitfields[BITSET_SIZE];
 
 void setbit(uint32_t bit, bool value)

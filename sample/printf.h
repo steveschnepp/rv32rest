@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define OUT 0x08100000
+#ifndef __GNU_LIBRARY__
+
+#define OUT 0x08800000
 #define OUT_BUFFER ((void *) OUT+4)
 #define OUT_OFFSET (*((unsigned int*) OUT))
 
@@ -28,3 +30,5 @@ static FILE __stdio = FDEV_SETUP_STREAM(sample_putc,
 					_FDEV_SETUP_RW);
 
 FILE *const __iob[3] = { &__stdio, &__stdio, &__stdio };
+
+#endif

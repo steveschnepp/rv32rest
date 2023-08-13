@@ -1,7 +1,7 @@
 # RV32I Emulator
 
 This is a RISC-V (RV32I) emulator written in C language.
-Implemented 37 instructions except `FENCE`, `ECALL` & `EBREAK`.
+Implemented all 47 instructions except CSR instructions, `ECALL` & `EBREAK`.
 
 *Read this in other languages: [English](README.md), [日本語](README.ja.md).*
 

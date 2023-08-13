@@ -528,6 +528,12 @@ void and(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+static
+void fence(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
+    increment_pc(cpu);
+    trace("fence\t%s, %s, %d \t# noop\n", register_name[rd], register_name[rs1], imm);
+}
+
 void unsupported_opcode(Cpu* cpu, uint32_t instruction) {
     exit(-1);
 }
@@ -709,6 +715,10 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     unsupported_opcode(cpu, instruction);
                     break;
             }
+            break;
+        case 0b0001111: // FENCE
+            imm = (instruction >> 12) & 0x0FFFFF;
+	    fence(cpu, imm, rs1, rd);
             break;
         default: // Unknown opcode
             trace("** Unimplemented\n");

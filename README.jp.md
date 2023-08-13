@@ -1,6 +1,6 @@
 # RV32I Emulator
 これはC言語で記述したRISC-V(RV32I)のエミュレータです．
-`FENCE`，`ECALL`，`EBREAK`を除く37個の命令を実装しました．
+CSR命令, `ECALL`，`EBREAK`を除く47個の命令を実装しました．
 
 ## 使い方
 以下のコマンドで`rv32i_emu`という実行ファイルが生成されます．

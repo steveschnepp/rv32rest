@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "log.h"
 #include "assert.h"
 
@@ -526,6 +528,10 @@ void and(Cpu* cpu, uint8_t rs2, uint8_t rs1, uint8_t rd) {
     return;
 }
 
+void unsupported_opcode(Cpu* cpu, uint32_t instruction) {
+    exit(-1);
+}
+
 void execution(Cpu* cpu, uint32_t instruction) {
     uint8_t opcode = (instruction >> 0) & 0x7F;
     uint8_t funct3 = (instruction >> 12) & 0x07;
@@ -538,25 +544,25 @@ void execution(Cpu* cpu, uint32_t instruction) {
     uint32_t imm;
 
     switch (opcode) {
-        case 0b0110111:
+        case 0b0110111: // LUI
             imm = (instruction >> 12) & 0x0FFFFF;
             lui(cpu, imm, rd);
             break;
-        case 0b0010111:
+        case 0b0010111: // AUIPC
             imm = (instruction >> 12) & 0x0FFFFF;
             auipc(cpu, imm, rd);
             break;
-        case 0b1101111:
+        case 0b1101111: // JAL
             imm = ((instruction >> 11) & 0x100000) | (instruction & 0x0FF000) |
                   ((instruction >> 9) & 0x000800) |
                   ((instruction >> 20) & 0x0007FE);
             jal(cpu, imm, rd);
             break;
-        case 0b1100111:
+        case 0b1100111: // JALR
             imm = (instruction >> 20) & 0x0FFF;
             jalr(cpu, imm, rs1, rd);
             break;
-        case 0b1100011:
+        case 0b1100011: // B*
             imm = ((instruction >> 19) & 0x1000) |
                   ((instruction << 4) & 0x800) | ((instruction >> 20) & 0x7E0) |
                   ((instruction >> 7) & 0x1E);
@@ -580,11 +586,12 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     bgeu(cpu, imm, rs2, rs1);
                     break;
                 default:
-                    trace("Unimplemented\n");
+                    trace("B* Unimplemented\n");
+                    unsupported_opcode(cpu, instruction);
                     break;
             }
             break;
-        case 0b0000011:
+        case 0b0000011: // L*
             imm = (instruction >> 20) & 0x0FFF;
             switch (funct3) {
                 case 0b000:
@@ -603,11 +610,12 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     lhu(cpu, imm, rs1, rd);
                     break;
                 default:
-                    trace("Unimplemented\n");
+                    trace("L* Unimplemented\n");
+                    unsupported_opcode(cpu, instruction);
                     break;
             }
             break;
-        case 0b0100011:
+        case 0b0100011: // S*
             imm = ((instruction >> 20) & 0xFE0) | ((instruction >> 7) & 0x1F);
             switch (funct3) {
                 case 0b000:
@@ -620,11 +628,12 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     sw(cpu, imm, rs2, rs1);
                     break;
                 default:
-                    trace("Unimplemented\n");
+                    trace("S* Unimplemented\n");
+                    unsupported_opcode(cpu, instruction);
                     break;
             }
             break;
-        case 0b0010011:
+        case 0b0010011: // Arithmetic Immediate
             imm = (instruction >> 20) & 0x0FFF;
             switch (funct3) {
                 case 0b000:
@@ -656,11 +665,12 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     }
                     break;
                 default:
-                    trace("Unimplemented\n");
+                    trace("I* Unimplemented\n");
+                    unsupported_opcode(cpu, instruction);
                     break;
             }
             break;
-        case 0b0110011:
+        case 0b0110011: // Arithmetic Registers
             switch (funct3) {
                 case 0b000:
                     if (funct7 == 0) {
@@ -695,12 +705,14 @@ void execution(Cpu* cpu, uint32_t instruction) {
                     and(cpu, rs2, rs1, rd);
                     break;
                 default:
-                    trace("Unimplemented\n");
+                    trace("R* Unimplemented\n");
+                    unsupported_opcode(cpu, instruction);
                     break;
             }
             break;
-        default:
-            trace("Unimplemented\n");
+        default: // Unknown opcode
+            trace("** Unimplemented\n");
+            unsupported_opcode(cpu, instruction);
             break;
     }
 

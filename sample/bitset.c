@@ -54,6 +54,32 @@ void *memset(void* s, int c, size_t n) {
 	}
 }
 
+void *memcpy(void* dst, const void *src, size_t len)
+{
+	uint32_t* dst32 = (uint32_t*) dst;
+	uint32_t* src32 = (uint32_t*) src;
+
+	int is_dst_aligned = ((int) dst32 % 4) == 0;
+	int is_src_aligned = ((int) src32 % 4) == 0;
+	if (is_dst_aligned && is_src_aligned) {
+		while (len > 3) {
+			*dst32++ = *src32++;
+			len -= 4;
+		}
+
+	}
+
+	uint8_t *dst8 = (uint8_t*) dst32;
+	uint8_t *src8 = (uint8_t*) src32;
+
+	while (len--) {
+		*dst8++ = *src8++;
+	}
+
+	return (dst);
+}
+
+__attribute__((weak))
 void main() {
 	for (int i = 0; i < BITSET_SIZE; i ++) {
 		setbit(i, i % 3);

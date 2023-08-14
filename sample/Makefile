@@ -29,6 +29,8 @@ elf: $(ELFS)
 
 test1.elf: LDFLAGS=-static -nostdlib -nostartfiles -T link.ld -march=$(ARCH) -mabi=$(ABI) start.s
 
+sieve.elf: bitset.o
+
 %.bin: %.elf
 	$(OBJCOPY) -O binary $< $@
 

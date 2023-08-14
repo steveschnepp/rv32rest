@@ -46,7 +46,7 @@ void printFib(int n)
 // driver code
 int main()
 {
-    int n = 1024;
+    int n = 32;
     printFib(n);
     return 0;
 }

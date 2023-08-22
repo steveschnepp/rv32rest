@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: update deps
+      run: sudo apt-get -y update
+    - name: install deps
+      run: sudo apt-get -y install gcc-riscv64-unknown-elf picolibc-riscv64-unknown-elf
+    - name: make
+      run: make

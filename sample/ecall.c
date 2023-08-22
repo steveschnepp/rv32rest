@@ -7,7 +7,6 @@ unsigned long ecall(unsigned long which, unsigned long arg0, unsigned long arg1,
               : "+r" (a0)
               : "r" (a1), "r" (a2), "r" (t2)
               : "memory");
-    asm volatile ("ebreak");
     return a0;
 }
 
@@ -17,6 +16,12 @@ unsigned long ecall_0(unsigned long which) {
 
 void main(void)
 {
-    ecall_0(0);
-    ecall(1, 2, 3, 4);
+    ecall(0, 'H', 0, 0);
+    ecall(0, 'e', 0, 0);
+    ecall(0, 'l', 0, 0);
+    ecall(0, 'l', 0, 0);
+    ecall(0, 'o', 0, 0);
+    ecall(0, ' ', 0, 0);
+
+    ecall(1, (unsigned long) "World!", 6, 0);
 }

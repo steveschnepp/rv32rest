@@ -1,3 +1,6 @@
+#ifndef __BITSET_H__
+#define __BITSET_H__
+
 #define bool _Bool
 
 #ifndef BITSET_SIZE
@@ -34,6 +37,7 @@ bool getbit(uint32_t bit)
 
 #else
 
+static
 bool bitfields[BITSET_SIZE];
 
 static inline
@@ -47,5 +51,7 @@ bool getbit(uint32_t bit)
 {
 	return bitfields[bit];
 }
+
+#endif
 
 #endif

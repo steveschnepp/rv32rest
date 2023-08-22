@@ -2,21 +2,23 @@
 
 #include "printf.h"
 
-// first two values
-long prev1 = 1;
-long prev2 = 0;
+typedef unsigned int fibo_t;
 
 // recursive function to print the fibonacci series
-void fib(int n)
-{
-    if (n < 3) {
-        return;
+static
+fibo_t fib(fibo_t n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    fibo_t fn1 = 1;
+    fibo_t fn2 = 1;
+    fibo_t fn = 0;
+    for (int i = 2; i < n; i ++) {
+        fn = fn1 + fn2;
+        fn2 = fn1;
+        fn1 = fn;
     }
-    unsigned long long fn = prev1 + prev2;
-    prev2 = prev1;
-    prev1 = fn;
-    printf("%llu ", fn);
-    return fib(n - 1);
+
+    return fn;
 }
 
 // function that handles the first two terms and calls the

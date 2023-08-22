@@ -31,7 +31,7 @@ static FILE __stdio = FDEV_SETUP_STREAM(sample_putc,
 
 FILE *const __iob[3] = { &__stdio, &__stdio, &__stdio };
 
-#if _PICOLIBC_MINOR__ >= 8
+#if _PICOLIBC_MINOR__ >= 7
 FILE *const stdin = __iob[0];
 FILE *const stdout = __iob[1];
 FILE *const stderr = __iob[2];

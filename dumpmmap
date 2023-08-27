@@ -1,0 +1,10 @@
+#! /bin/sh
+
+ROMFILE=${1:-}
+RAMFILE=${2:-mmap/ram}
+INFILE=${3:-mmap/in}
+OUTFILE=${4:-mmap/out}
+
+xxd -a -o 0x01000000 $RAMFILE
+xxd -a -o 0x08000000 $INFILE
+xxd -a -o 0x08100000 $OUTFILE

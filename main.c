@@ -1,3 +1,6 @@
+/* glibc will complain about modern things many it doesn't see this. */
+#define _DEFAULT_SOURCE
+
 #include <stdio.h>
 #include <stdint.h>
 #include <inttypes.h>

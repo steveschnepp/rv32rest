@@ -540,13 +540,13 @@ void fence_decode(uint8_t i, char* buf) {
 static
 void fence(Cpu* cpu, uint32_t imm, uint8_t rs1, uint8_t rd) {
     increment_pc(cpu);
-    char read[5] = {0};
-    char write[5] = {0};
-    uint8_t r = (imm >> 12) & 0xF;
-    uint8_t w = (imm >> 8) & 0xF;
-    fence_decode(r, read);
-    fence_decode(w, write);
-    trace("fence\t%s, %s, %x \t# %s, %s\n", register_name[rd], register_name[rs1], imm, read, write);
+    char predecessor_as_str[5] = {0};
+    char successor_as_str[5] = {0};
+    uint8_t predecessor = (imm >> 12) & 0xF;
+    uint8_t successor = (imm >> 8) & 0xF;
+    fence_decode(predecessor, predecessor_as_str);
+    fence_decode(successor, successor_as_str);
+    trace("fence\t%s, %s, %x \t# %s, %s\n", register_name[rd], register_name[rs1], imm, predecessor_as_str, successor_as_str);
     return;
 }
 

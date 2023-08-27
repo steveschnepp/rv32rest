@@ -35,7 +35,7 @@ int main() {
         }
 
     }
-	printf("%d primes\n", count);
+    	printf("%d primes\n", count);
 	unsigned long long c_diff = read_cycles() - c;
 	unsigned long long t_us = read_times() - t;
 

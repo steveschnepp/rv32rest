@@ -1,6 +1,6 @@
 #include "csr.h"
 #include "printf.h"
-
+#include "ecall.h"
 
 void main(void)
 {

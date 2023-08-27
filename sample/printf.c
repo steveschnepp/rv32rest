@@ -4,6 +4,7 @@
 
 #include "printf.h"
 
+__attribute__((weak))
 void main() {
 	printf("Hello World!\n");
 }

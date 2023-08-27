@@ -62,7 +62,7 @@ void *memcpy(void* dst, const void *src, size_t len)
 	int is_dst_aligned = ((int) dst32 % 4) == 0;
 	int is_src_aligned = ((int) src32 % 4) == 0;
 	if (is_dst_aligned && is_src_aligned) {
-		while (len > 3) {
+		while (len > 3) { 
 			*dst32++ = *src32++;
 			len -= 4;
 		}

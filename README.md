@@ -1,7 +1,7 @@
 # RV32I Emulator
 
 This is a RISC-V (RV32I) emulator written in C language.
-Implemented all 47 instructions except CSR instructions, `ECALL` & `EBREAK`.
+Implemented all 47 base RV32I instructions including CSR instructions, `ECALL` & `EBREAK`.
 
 __It is a fork of https://github.com/zyu-c/Rv32iEmulator as I want to take it into another direction__
 

@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
 
 //		usleep(10 * 1000);
 
-	} while (__builtin_expect(cpu.pc, 1));
+	} while (__builtin_expect(cpu.pc != 0, 1));
 
 	// End when the program counter returns to 0
 	printf("Finish in %" PRIx64 " cycles.\n", cpu.cycles);

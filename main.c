@@ -127,6 +127,8 @@ int main(int argc, char** argv) {
 
 	do {
 		int32_t instruction = fetch(&cpu);
+		if (__builtin_expect(instruction == 0x0000006f, 0)) break; // jal     z0, 0 is an endless loop, which picolib uses now instead of "j 0"
+
 		trace("%10" PRIu64 " %4x: %08x\t\t", cpu.cycles, cpu.pc, instruction);
 		execution(&cpu, instruction);
 		cpu.cycles++;

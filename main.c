@@ -151,9 +151,6 @@ int main(int argc, char** argv) {
 		}
 
 		yield();
-
-//		usleep(10 * 1000);
-
 	} while (__builtin_expect(cpu.pc != 0, 1));
 
 	// End when the program counter returns to 0

@@ -46,12 +46,12 @@ unsigned long ecall_0(unsigned long which) {
 __attribute__((weak))
 void main(void)
 {
-    ecall_3(0, 'H', 0, 0);
-    ecall_1(0, 'e');
-    ecall_1(0, 'l');
-    ecall_1(0, 'l');
-    ecall_1(0, 'o');
-    ecall_1(0, ' ');
+    ecall_3(SYS_PUTC, 'H', 0, 0);
+    ecall_1(SYS_PUTC, 'e');
+    ecall_1(SYS_PUTC, 'l');
+    ecall_1(SYS_PUTC, 'l');
+    ecall_1(SYS_PUTC, 'o');
+    ecall_1(SYS_PUTC, ' ');
 
-    ecall_2(1, (unsigned long) "World!", 6);
+    ecall_2(SYS_PUTS, (unsigned long) "World!\n", 6);
 }

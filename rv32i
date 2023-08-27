@@ -1,3 +1,4 @@
 #! /bin/sh
 
+make -s -C mmap
 exec ./rv32i_emu $1 mmap/ram mmap/in mmap/out

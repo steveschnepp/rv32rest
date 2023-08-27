@@ -1,4 +1,5 @@
 SRCS=$(wildcard *.c)
+OBJS=$(SRCS:.c=.o)
 ELFS=$(SRCS:.c=.elf)
 BINS=$(SRCS:.c=.bin)
 
@@ -43,4 +44,4 @@ bitset.elf  ecall.elf  empty.elf  fence.elf  fibo.elf  forth8.elf csr.elf  pi.el
 	$(OBJCOPY) -O srec $< $@
 
 clean:
-	rm -f $(BINS) $(ELFS)
+	rm -f $(OBJS) $(BINS) $(ELFS)

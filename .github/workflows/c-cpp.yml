@@ -18,9 +18,4 @@ jobs:
     - name: install deps
       run: sudo apt-get -y install gcc-riscv64-unknown-elf picolibc-riscv64-unknown-elf
     - name: make
-      run: |
-        for commit in $(git rev-list ${{ github.event.before}}..${{ github.sha}}); do
-          git checkout $commit
-          echo "run test"
-          make || exit 1
-        done
+      run: make

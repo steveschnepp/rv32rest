@@ -93,6 +93,7 @@ void ecall_callback(Cpu* cpu) {
 			break;
 		case 1: {
 			uint32_t off = cpu->registers[register_by_name("a1")];
+			off %= 0x0800000; // wrap offset back into the MMAP region of the guest memory
 			char* str = (char*) cpu->memory + off;
 			fprintf(stderr, "%s", str);
 		}	break;

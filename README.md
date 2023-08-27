@@ -3,44 +3,33 @@
 This is a RISC-V (RV32I) emulator written in C language.
 Implemented all 47 instructions except CSR instructions, `ECALL` & `EBREAK`.
 
-*Read this in other languages: [English](README.md), [日本語](README.ja.md).*
+__It is a fork of https://github.com/zyu-c/Rv32iEmulator__
 
-## Usage
+## Compilation
 
-The following command `rv32i_emu` will generate an executable file.
+
+It is very easy.
+
 
 ``` bash
-$ git clone https://github.com/zyu-c/Rv32iEmulator.git
-$ cd Rv32iEmulator
+$ sudo apt -y install gcc-riscv64-unknown-elf picolibc-riscv64-unknown-elf
+$ git clone https://github.com/steveschnepp/rv32rest.git
+$ cd rv32rest
 $ make
 ```
 
-Give a binary file compiled for RV32I as an argument when executing.
+## Usage
+
+The `sample/Makefile` builds 2 files, an `.elf` and a `.bin`.
+
+Give a `.bin` file as an argument to `rv32i_emu`, along with the RAM, IN and OUT files.
 
 ``` bash
-$ rv32i_emu sample/test1.bin
+$ rv32i_emu sample/test1.bin mmap/ram mmap/in mmap/out
 ```
 
-## Compiling the sample files
-
-Prepare the RISC-V compilation environment in advance.
-For details → [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain).
-
-Compile the sample program and generate an ELF file.
+You can also disassemble the `.elf` file to check the generated code with the following command.
 
 ``` bash
-$ cd sample
-$ riscv32-unknown-linux-gnu-gcc -o test1.elf test1.c start.s -march=rv32i -static -nostdlib -nostartfiles -T link.ld
-```
-
-Convert an elf file to a binary file.
-
-``` bash
-$ riscv32-unknown-linux-gnu-objcopy -O binary test1.elf test1.bin
-```
-
-You can disassemble the elf file with the following command.
-
-``` bash
-$ riscv32-unknown-linux-gnu-objdump -d test1.elf
+$ riscv64-unknown-elf-objdump -D sample/empty.elf
 ```

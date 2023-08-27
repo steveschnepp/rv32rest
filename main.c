@@ -102,10 +102,12 @@ void ecall_callback(Cpu* cpu) {
 	}
 }
 
+#ifdef EBREAK
 void ebreak_callback(Cpu* cpu) {
 	static char *nullptr = 0;
 	*nullptr = '\n'; // segfaults. use "jump +1" in GDB to bypass
 }
+#endif
 
 int main(int argc, char** argv) {
 	argc --; argv++; // Ignore the program name

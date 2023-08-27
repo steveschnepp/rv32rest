@@ -86,6 +86,21 @@ uint64_t times() {
 	return t;
 }
 
+void ecall_callback(Cpu* cpu) {
+	switch(cpu->registers[register_by_name("t2")]) {
+		case 0:
+			fprintf(stderr, "%c", cpu->registers[register_by_name("a0")]);
+			break;
+		case 1: {
+			uint32_t off = cpu->registers[register_by_name("a0")];
+			char* str = (char*) cpu->memory + off;
+			fprintf(stderr, "%s", str);
+		}	break;
+		default:
+			break;
+	}
+}
+
 int main(int argc, char** argv) {
 	argc --; argv++; // Ignore the program name
 

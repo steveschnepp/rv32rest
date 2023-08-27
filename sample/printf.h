@@ -46,7 +46,7 @@ static FILE __stdio = FDEV_SETUP_STREAM(sample_putc,
 					NULL,
 					_FDEV_SETUP_RW);
 
-static FILE *const __iob[3] = { &__stdio, &__stdio, &__stdio };
+FILE *const __iob[3] = { &__stdio, &__stdio, &__stdio };
 
 #if _PICOLIBC_MINOR__ >= 8
 FILE *const stdin = __iob[0];

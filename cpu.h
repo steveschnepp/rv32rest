@@ -2,6 +2,9 @@
 #define CPU_H_
 
 #include <stdint.h>
+#include <string.h>
+
+#include "assert.h"
 
 struct memory_region {
 	uint32_t size;
@@ -27,6 +30,16 @@ typedef struct {
 } Cpu;
 
 extern char* register_name[];
+
+inline
+static
+int register_by_name(char *name) {
+	for(int i = 0; i < NUM_REGISTERS; i++) {
+		if (strcmp(name, register_name[i]) == 0) return i;
+	}
+	_assert(0);
+	return 0;
+}
 
 void initCpu(Cpu* cpu);
 

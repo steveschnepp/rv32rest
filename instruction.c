@@ -561,7 +561,7 @@ void ebreak_callback(Cpu* cpu) {
 static
 void ecall(Cpu* cpu) {
     increment_pc(cpu);
-    trace("ecall \t#\n");
+    trace("ecall \t\t\t# %s:%x\n", register_name[7], cpu->registers[7]);
     ecall_callback(cpu);
     return;
 }

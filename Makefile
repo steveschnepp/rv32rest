@@ -1,7 +1,7 @@
 PROGRAM = rv32i_emu
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
-OPTIM = 0
+OPTIM = g
 DEBUG = -DDEBUG
 CFLAGS = -Werror -Wall
 CFLAGS += -O$(OPTIM) -g

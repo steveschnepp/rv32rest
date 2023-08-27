@@ -7,7 +7,7 @@ OBJCOPY=riscv64-unknown-elf-objcopy
 
 ARCH=rv32e
 ABI=ilp32e
-OPTIM=0
+OPTIM=g
 CFLAGS=-march=$(ARCH) -mabi=$(ABI)
 CFLAGS+=-D__RV32REST__
 CFLAGS+=-g

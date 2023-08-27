@@ -43,6 +43,13 @@ unsigned long ecall_0(unsigned long which) {
     return a0;
 }
 
+void ebreak() {
+    asm volatile ("ebreak"
+              :
+              :
+              : "memory");
+}
+
 __attribute__((weak))
 void main(void)
 {
@@ -54,4 +61,6 @@ void main(void)
     ecall_1(SYS_PUTC, ' ');
 
     ecall_2(SYS_PUTS, (unsigned long) "World!\n", 6);
+
+    ebreak();
 }

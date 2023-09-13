@@ -3,7 +3,6 @@
 This is a RISC-V (RV32I) emulator written in C language.
 Implemented all 47 base RV32I instructions including CSR instructions, `ECALL` & `EBREAK`.
 
-__It is a fork of https://github.com/zyu-c/Rv32iEmulator as I want to take it into another direction__
 
 ## Compilation
 
@@ -33,3 +32,7 @@ You can also disassemble the `.elf` file to check the generated code with the fo
 ``` bash
 $ riscv64-unknown-elf-objdump -D sample/empty.elf
 ```
+
+## Legacy 
+
+__It is a fork of https://github.com/zyu-c/Rv32iEmulator as I am taking it into another direction__

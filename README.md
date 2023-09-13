@@ -33,6 +33,6 @@ You can also disassemble the `.elf` file to check the generated code with the fo
 $ riscv64-unknown-elf-objdump -D sample/empty.elf
 ```
 
-## Legacy 
+## History 
 
 __It is a fork of https://github.com/zyu-c/Rv32iEmulator as I am taking it into another direction__
